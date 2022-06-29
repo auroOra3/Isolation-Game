@@ -1,51 +1,29 @@
 import java.util.ArrayList;
 
 public class Board {
-    private Integer[][] gameBoard;
-    private final Integer dimension=8;
-    Integer posPlayer, posCom, numMoveCom, numPlayerCom, first;
-    private ArrayList<Integer[]> moveSetCom;
-    private ArrayList<Integer[]> moveSetPlayer;
-    int f;
+    private int[][] gameBoard;
+    private final int dimension=8;
 
     public Board() {
-        moveSetCom = new ArrayList<>();
-        moveSetPlayer = new ArrayList<>();
-        this.f = getFValue();
-        gameBoard = new Integer[8][8];
+        gameBoard = new int[8][8];
         for (int i = 0; i < gameBoard.length; i++) {
-            for (int j = 0; j < gameBoard.length; j++) {
-                if ((i+j)%2!=0)
-                    gameBoard[i][j]=0;
-                gameBoard[i][j]=1;
+            for (int j = 0; j < gameBoard[i].length; j++) {
+                if ((i + j) % 2 == 0)
+                    gameBoard[i][j] = 1;
+                gameBoard[i][j]=0;
             }
         }
-
-        updatePos(0, 0, 'x');
-        updatePos(8, 8, 'o');
     }
 
-    public Board(Board board, int row, int col, String c){
-        this.gameBoard = new Integer[dimension][dimension];
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                this.gameBoard[i][j] = board.gameBoard[i][j];
-            }
-        }
-        this.playerPos = board.getPosPlayer();
-        this.posComX = board.getPosCom();
-        this.moveSetCom = new ArrayList<Integer[]>();
-        this.moveSetPlayer = new ArrayList<Integer[]>();
-        this.first = board.first;
-
-        if (c.)
-
+    public boolean isWhite(int x, int y) {
+        return gameBoard[x][y] == 0;
     }
 
-    public int size(){
+    public int size() {
         return dimension;
     }
 
+    // returns piece at a given index (x,y)
     public static Piece pieceAt(int x, int y, ArrayList<Piece> pieces){
         for (int i = 0; i < pieces.size(); i++) {
             if (pieces.get(i).getX() == x && pieces.get(i).getY() == y)
@@ -53,8 +31,4 @@ public class Board {
         }
         return null;
     }
-
-
-
-
 }

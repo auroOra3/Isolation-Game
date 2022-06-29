@@ -1,5 +1,3 @@
-import processing.core.PImage;
-
 import java.util.ArrayList;
 
 public abstract class Piece {
@@ -8,7 +6,7 @@ public abstract class Piece {
     private int side;
     private ArrayList<Integer> moveSet = new ArrayList<>();
 
-    abstract ArrayList<Integer> generateMove(int x, int y, ArrayList<Pieces> pieces);
+    abstract ArrayList<Integer> generateMove(int x, int y, ArrayList<Piece> pieces);
 
     public void setMoveSet(ArrayList<Integer> moves) {
         this.moveSet = moves;
@@ -21,8 +19,10 @@ public abstract class Piece {
     public boolean legalMove(int currX, int currY, int x, int y, ArrayList pieces) {
         boolean legalMove=false;
         for (int i = 0; i < moveSet.size(); i++) {
-            if (moveSet.get(i) == x && moveSet.get(i+1) == y)
+            if (moveSet.get(i) == x && moveSet.get(i + 1) == y) {
                 legalMove = true;
+                break;
+            }
         }
         return legalMove;
     }
