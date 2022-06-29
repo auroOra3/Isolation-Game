@@ -50,4 +50,7 @@ public abstract class Piece {
         yPos = y;
     }
 
+    public int getSide() {
+        return side;
+    }
 }

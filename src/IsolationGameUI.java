@@ -19,22 +19,22 @@ public class IsolationGameUI extends PApplet {
         darkQueen = loadImage("dark_queen.png");
     }
 
-    public void setup() {
-        //scale corresponds to pixel scale of each grid space, and offset
-        //is the pixel distance between the edge of the window and the board
-        scale = dimension / 10;
-
-        //Convenient variables for the coordinates of the left corner
-        //of the bottom left corner gridspace, or "a1" of the board
-        leftCornerX = scale;
-        leftCornerY = dimension - 2 * scale;
-
-        for (int i = 0; i < pieces.size(); i++) {
-            pieces.get(i).setImg
-        }
-
-        canHold = true;
-    }
+//    public void setup() {
+//        //scale corresponds to pixel scale of each grid space, and offset
+//        //is the pixel distance between the edge of the window and the board
+//        scale = dimension / 10;
+//
+//        //Convenient variables for the coordinates of the left corner
+//        //of the bottom left corner gridspace, or "a1" of the board
+//        leftCornerX = scale;
+//        leftCornerY = dimension - 2 * scale;
+//
+//        for (int i = 0; i < pieces.size(); i++) {
+//            pieces.get(i).setImg
+//        }
+//
+//        canHold = true;
+//    }
 
 
     @Override
