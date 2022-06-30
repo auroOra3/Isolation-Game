@@ -1,56 +1,29 @@
-import java.util.ArrayList;
+import processing.core.PApplet;
 
-public abstract class Piece {
-    private int startX, startY, xPos, yPos;
-    private boolean held;
-    private int side;
-    private ArrayList<Integer> moveSet = new ArrayList<>();
+public class Piece extends PApplet {
+    private int posX, posY, startX, startY;
+    public FieldStatus playerStatus;
+    private String ImgName;
+    private PApplet canvas;
 
-    abstract ArrayList<Integer> generateMove(int x, int y, ArrayList<Piece> pieces);
 
-    public void setMoveSet(ArrayList<Integer> moves) {
-        this.moveSet = moves;
-    }
-
-    public ArrayList<Integer> getMoveSet() {
-        return this.moveSet;
-    }
-
-    public boolean legalMove(int currX, int currY, int x, int y, ArrayList pieces) {
-        boolean legalMove=false;
-        for (int i = 0; i < moveSet.size(); i++) {
-            if (moveSet.get(i) == x && moveSet.get(i + 1) == y) {
-                legalMove = true;
-                break;
+    public Piece(FieldStatus playerStatus) {
+        switch (playerStatus) {
+            case WHITE -> {
+                setImage("./ressources/greenCrab.png");
+                setStart(0, 7);
+            }
+            case BLACK -> {
+                setImage("./ressources/redCrab.png");
+                setStart(7,0);
             }
         }
-        return legalMove;
+        resetPosition();
     }
 
-    public void move(int currX, int currY, int x, int y, ArrayList<Piece> pieces) {
-        if (this.legalMove(currX, currY, x, y, pieces)){
-            xPos = x;
-            yPos = y;
-        }
+    public void setImage(String s) {
+
     }
 
-    public int getX() {
-        return xPos;
-    }
 
-    public int getY() {
-        return yPos;
-    }
-
-    public void setX(int x) {
-        xPos = x;
-    }
-
-    public void setY(int y) {
-        yPos = y;
-    }
-
-    public int getSide() {
-        return side;
-    }
 }
