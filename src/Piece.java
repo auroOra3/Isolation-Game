@@ -1,29 +1,39 @@
 import processing.core.PApplet;
+import processing.core.PImage;
 
-public class Piece extends PApplet {
-    private int posX, posY, startX, startY;
+public class Piece {
+    private int posX, posY;
     public FieldStatus playerStatus;
-    private String ImgName;
-    private PApplet canvas;
+    private PImage img;
 
+    public Piece(FieldStatus playerStatus, PApplet canvas) {
+        loadImage(canvas);
+    }
 
-    public Piece(FieldStatus playerStatus) {
+    public void loadImage(PApplet canvas) {
         switch (playerStatus) {
             case WHITE -> {
-                setImage("./ressources/greenCrab.png");
-                setStart(0, 7);
+                img = canvas.loadImage("./ressources/greenCrab.png");
             }
             case BLACK -> {
-                setImage("./ressources/redCrab.png");
-                setStart(7,0);
+                img = canvas.loadImage("./ressources/redCrab.png");
             }
         }
-        resetPosition();
     }
 
-    public void setImage(String s) {
+    public void draw(PApplet canvas) {
 
     }
 
+    public int getPosX() {
+        return posX;
+    }
 
+    public int getPosY() {
+        return posY;
+    }
+
+    public FieldStatus getPlayerStatus() {
+        return playerStatus;
+    }
 }
