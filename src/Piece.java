@@ -2,34 +2,34 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 public class Piece {
-    private int posX, posY;
+    private int piecePosX, piecePosY;
     public FieldState playerStatus;
-    private PImage img;
+    private PImage crabImg;
 
-    public Piece(FieldState playerStats, int posX, int posY) {
-        this.playerStatus = playerStats;
-        this.posX = posX;
-        this.posY = posY;
-        switch (playerStatus) {
+    public Piece(FieldState playerStatus, int posX, int posY) {
+        this.playerStatus = playerStatus;
+        this.piecePosX = posX;
+        this.piecePosY = posY;
+        switch (this.playerStatus) {
             case WHITE -> {
-                img = ImageRessources.whitePawn;
+                crabImg = Resources.greenCrab;
             }
             case BLACK -> {
-                img = ImageRessources.blackPawn;
+                crabImg = Resources.redCrab;
             }
         }
     }
 
     public void draw(PApplet canvas) {
-        canvas.image(img, posX * 45 + 88, posY * 45 + 171, 45, 45);
+        canvas.image(crabImg, piecePosX * 45 + 88, piecePosY * 45 + 171, 45, 45);
     }
 
-    public int getPosX() {
-        return posX;
+    public int getPiecePosX() {
+        return piecePosX;
     }
 
-    public int getPosY() {
-        return posY;
+    public int getPiecePosY() {
+        return piecePosY;
     }
 
     public FieldState getPlayerStatus() {

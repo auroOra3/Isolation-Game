@@ -19,7 +19,7 @@ public class GameBoard {
     }
 
     public void setPiece(Piece piece) {
-        gameBoard[piece.getPosX()][piece.getPosY()] = piece;
+        gameBoard[piece.getPiecePosX()][piece.getPiecePosY()] = piece;
         if (piece.getPlayerStatus() == FieldState.BLACK) {
             black = piece;
         } else if (piece.getPlayerStatus() == FieldState.WHITE) {

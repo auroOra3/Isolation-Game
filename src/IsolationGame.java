@@ -1,20 +1,21 @@
 import java.util.ArrayList;
 
-public class IsolationGame {
-    private FieldState[][] field;
+public class IsolationGame implements Isolation {
+    private FieldState[][] board;
     public IsolationGame(int size) {
-        field = new FieldState[size][size];
+        board = new FieldState[size][size];
     }
-    public ArrayList<Move> getAvaiableMoves(int x, int y) {
+
+    public ArrayList<Move> getAvailableMoves(int x, int y) {
         ArrayList<Move> availableMoves = new ArrayList<>();
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, 0, 1));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, 0, -1));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, 1, 0));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, -1, 0));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, 1, 1));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, -1, -1));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, 1, -1));
-        availableMoves.addAll(getAvaiableMovesDirections(field, x, y, -1, 1));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 0, 1));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 0, -1));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, 0));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, 0));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, 1));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, -1));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, -1));
+        availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, 1));
 //        for (int i = 0; i <= field.length - 1; i++) {
 //            Move possibleMove = new Move(x, y, x, y+i);
 //            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
@@ -53,7 +54,7 @@ public class IsolationGame {
         return availableMoves;
     }
 
-    private ArrayList<Move> getAvaiableMovesDirections(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
+    private ArrayList<Move> getAvailableMovesDirections(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 0; i <= field.length - 1; i++) {
             Move possibleMove = new Move(x, y, x-i*xMultiplier, y-i*yMultiplier);
@@ -61,6 +62,11 @@ public class IsolationGame {
             else break;
         }
         return moves;
+    }
+
+    @Override
+    public Isolation play(Move move) {
+        return null;
     }
 }
 
