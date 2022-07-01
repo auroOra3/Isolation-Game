@@ -1,25 +1,30 @@
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class IsolationGame implements Isolation {
+
     private FieldState[][] board;
-    public IsolationGame(int size) {
-        board = new FieldState[size][size];
+
+    public IsolationGame(IsolationGame isolationGame) {
+        IntStream.range(0, 8).forEach(x -> System.arraycopy(isolationGame.board[x], 0, board[x], 0, 8));
     }
 
-    public ArrayList<Move> getAvailableMoves(int x, int y) {
+
+
+    public ArrayList<Move> availableMoves(int x, int y) {
         ArrayList<Move> availableMoves = new ArrayList<>();
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 0, 1));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 0, -1));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, 0));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, 0));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, 1));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, -1));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, -1));
-        availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, 1));
+        availableMoves.addAll(generateDirection(board, x, y, 0, 1));
+        availableMoves.addAll(generateDirection(board, x, y, 0, -1));
+        availableMoves.addAll(generateDirection(board, x, y, 1, 0));
+        availableMoves.addAll(generateDirection(board, x, y, -1, 0));
+        availableMoves.addAll(generateDirection(board, x, y, 1, 1));
+        availableMoves.addAll(generateDirection(board, x, y, -1, -1));
+        availableMoves.addAll(generateDirection(board, x, y, 1, -1));
+        availableMoves.addAll(generateDirection(board, x, y, -1, 1));
         return availableMoves;
     }
 
-    private ArrayList<Move> getAvailableMovesDirections(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
+    private ArrayList<Move> generateDirection(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 0; i <= field.length - 1; i++) {
             Move possibleMove = new Move(x, y, x-i*xMultiplier, y-i*yMultiplier);
@@ -31,28 +36,33 @@ public class IsolationGame implements Isolation {
 
     @Override
     public Isolation play(Move move) {
-        if (move.isValidMove(board))
-            board[move.destinationX()][move.destinationY()] = FieldState.BLOCKED;
+        IsolationGame isolationGame = new IsolationGame(this);
+        if (move.isValidMove(board)) {
+            isolationGame.board[move.destinationX()][move.destinationY()] = isolationGame.board[move.sourceX()][move.sourceY()];
+            isolationGame.board[move.sourceX()][move.sourceY()] = FieldState.BLOCKED;
+        }
+        FieldState playerPos = isolationGame.board[move.destinationX()][move.destinationY()];
 
+
+        return isolationGame;
 
     }
 }
 
-record Move(int x, int y, int destinationX, int destinationY) {
+record Move(int sourceX, int sourceY, int destinationX, int destinationY) {
 
     public boolean isValidMove(FieldState[][] board) {
-        if (x >= 0 && x < board.length && y >= 0 && y < board.length && destinationX >= 0 && destinationX < board.length && destinationY >= 0 && destinationY < board.length)
+        if (sourceX >= 0 && sourceX < board.length && sourceY >= 0 && sourceY < board.length && destinationX >= 0 && destinationX < board.length && destinationY >= 0 && destinationY < board.length)
             return false;
-        FieldState player = board[x][y];
-        // Hier eventuell dest nicht extra speichern
-        FieldState dest = board[destinationX][destinationY];
-        assert player != null && player != FieldState.BLOCKED;
-        return dest == null;
+        FieldState playerPos = board[sourceX][sourceY];
+        FieldState destination = board[destinationX][destinationY];
+        assert playerPos != null && playerPos != FieldState.BLOCKED;
+        return destination == null;
     }
 }
 
 enum FieldState {
-    BLACK,
-    WHITE,
+    RED,
+    GREEN,
     BLOCKED;
 }

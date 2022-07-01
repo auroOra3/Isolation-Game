@@ -9,7 +9,7 @@ public class GameBoard {
     private Isolation isolationInterface;
     public Piece[][] gameBoard;
     private final int size = 8;
-    private Piece black, white;
+    private Piece red, green;
     ArrayList<ArrayList<Move>> availableMoves = new ArrayList<>();
 
     public GameBoard() {
@@ -19,8 +19,8 @@ public class GameBoard {
     public void setPiece(Piece piece) {
         gameBoard[piece.getPiecePosX()][piece.getPiecePosY()] = piece;
         switch (piece.getPlayerStatus()) {
-            case BLACK -> black = piece;
-            case WHITE -> white = piece;
+            case RED -> red = piece;
+            case GREEN -> green = piece;
         }
     }
 
@@ -34,19 +34,20 @@ public class GameBoard {
 
     public void executeMove(boolean whiteTurn, int piecePosX, int piecePosY) {
 
-        if (whiteTurn && white == null) {
-            setPiece(new Piece(FieldState.WHITE, piecePosX, piecePosY));
+        if (whiteTurn && green == null) {
+            setPiece(new Piece(FieldState.GREEN, piecePosX, piecePosY));
             Move move = new Move(piecePosX, piecePosY, piecePosX, piecePosY);
             isolationInterface = isolationInterface.play(move);
             return;
         }
-        if (!whiteTurn && black == null) {
-            setPiece(new Piece(FieldState.BLACK, piecePosX, piecePosY));
+        if (!whiteTurn && red == null) {
+            setPiece(new Piece(FieldState.RED, piecePosX, piecePosY));
             Move move = new Move(piecePosX, piecePosY, piecePosX, piecePosY);
             isolationInterface = isolationInterface.play(move);
             return;
         }
-        availableMoves.add(isolationInterface.getAvailableMoves(piecePosX, piecePosY));
+
+        availableMoves.add(isolationInterface.availableMoves(piecePosX, piecePosY));
 
     }
 }
