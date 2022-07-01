@@ -6,23 +6,22 @@ public class Piece {
     public FieldState playerStatus;
     private PImage img;
 
-    public Piece(FieldState playerStatus, PApplet canvas) {
-        loadImage(canvas);
-    }
-
-    public void loadImage(PApplet canvas) {
+    public Piece(FieldState playerStats, int posX, int posY) {
+        this.playerStatus = playerStats;
+        this.posX = posX;
+        this.posY = posY;
         switch (playerStatus) {
             case WHITE -> {
-                img = canvas.loadImage("./ressources/greenCrab.png");
+                img = ImageRessources.whitePawn;
             }
             case BLACK -> {
-                img = canvas.loadImage("./ressources/redCrab.png");
+                img = ImageRessources.blackPawn;
             }
         }
     }
 
     public void draw(PApplet canvas) {
-
+        canvas.image(img, posX * 45 + 88, posY * 45 + 171, 45, 45);
     }
 
     public int getPosX() {

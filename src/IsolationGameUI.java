@@ -5,13 +5,9 @@ import processing.core.PImage;
 public class IsolationGameUI extends PApplet {
 
     GameState currentState = GameState.STARTSCREEN;
-    int currentFrame = 0, numOfFrames = 92;
-    PImage[] images = new PImage[numOfFrames];
-    PImage islandScreen;
-    PImage treasureMap;
-    PFont bete;
     private GameBoard gameBoard;
     private boolean whiteTurn;
+    private int currentFrame = 0;
 
     public static void main(String[] args) {
         PApplet.runSketch(new String[]{""}, new IsolationGameUI());
@@ -19,18 +15,13 @@ public class IsolationGameUI extends PApplet {
 
     @Override
     public void settings() {
-        size(540, 668);
+        size(540, 669);
     }
 
     @Override
     public void setup() {
-        for (int i = 0; i < numOfFrames; i++) {
-            String imageName = "frame_" + nf(i, 2) + "_delay-0.12s.png";
-            images[i] = loadImage("./ressources/" + imageName);
-        }
-        bete = createFont("./ressources/BeteNoirNF.ttf", 128);
-        islandScreen = loadImage("./ressources/frame_42_delay-0.12s.png");
-        treasureMap = loadImage("./ressources/treasureMap.png");
+        ImageRessources.loadRessources(this);
+        this.gameBoard = new GameBoard();
     }
 
     @Override
@@ -45,17 +36,17 @@ public class IsolationGameUI extends PApplet {
 
     public void initScreen() {
         frameRate(9.0f);
-        currentFrame = (currentFrame+1) % numOfFrames;
+        currentFrame = (currentFrame+1) % ImageRessources.numOfFrames;
         int offset = 0;
-        for (int x = -100; x < width; x += images[0].width) {
-            background(images[(currentFrame+offset) % numOfFrames]);
+        for (int x = -100; x < width; x += ImageRessources.menuScreenBackground[0].width) {
+            background(ImageRessources.menuScreenBackground[(currentFrame+offset) % ImageRessources.numOfFrames]);
             offset+=2;
         }
-        textFont(bete);
+        textFont(ImageRessources.bete);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
-        text("Don´t get stranded", width/2, height-590);
+        text("Don´t get stranded", width/2, height-550);
         fill(0, 95, 177);
         textSize(25);
         text("Click to start", width/2, height-60);
@@ -65,15 +56,15 @@ public class IsolationGameUI extends PApplet {
     }
 
     public void gameInstructionScreen() {
-        background(islandScreen);
-        image(treasureMap, 10 , height-550, 200F*2.6F, 166*2.8F);
+        background(ImageRessources.islandScreen);
+        image(ImageRessources.treasureMap, 10 , height-550, 200F*2.6F, 166*2.8F);
 
     }
 
     public void gamePlayScreen() {
         int xOffset = 90, yOffset = 171;
-        background(islandScreen);
-        image(treasureMap, 10, height-550, 200F* 2.6F, 166F*2.8F);
+        background(ImageRessources.islandScreen);
+        image(ImageRessources.treasureMap, 10, height-550, 200F* 2.6F, 166F*2.8F);
         boolean isWhite = true;
         stroke(color(191,147,84));
         for (int x = 0; x < 350; x+=45) {
@@ -87,13 +78,16 @@ public class IsolationGameUI extends PApplet {
             }
             isWhite = !isWhite;
         }
+
+        gameBoard.draw(this);
     }
 
     public void gameOverScreen() {
 
     }
 
-    public void mouseClicked() {
+    @Override
+    public void mousePressed() {
         System.out.println(mouseX);
         System.out.println(mouseY);
 
@@ -108,11 +102,13 @@ public class IsolationGameUI extends PApplet {
                 if (mouseX > 189 && mouseX < 358 && mouseY > 626 && mouseY < 638) {
                     startInstruction();
                 }
+                break;
             }
             case GAME -> {
-                int posX = (90 + mouseX)/45;
-                int posY = (171 + mouseY)/45;
+                int posX = (mouseX - 90)/45;
+                int posY = (mouseY - 171)/45;
                 gameBoard.executeMove(whiteTurn, posX, posY);
+                whiteTurn = !whiteTurn;
             }
             case GAMEOVER -> restart();
         }

@@ -13,6 +13,11 @@ public class GameBoard {
     private Piece white;
     ArrayList<Piece> pieces = new ArrayList<>();
 
+    public GameBoard() {
+        gameBoard = new Piece[8][8];
+
+    }
+
     public void setPiece(Piece piece) {
         gameBoard[piece.getPosX()][piece.getPosY()] = piece;
         if (piece.getPlayerStatus() == FieldState.BLACK) {
@@ -31,8 +36,21 @@ public class GameBoard {
     }
 
     public void executeMove(boolean whiteTurn, int posX, int posY) {
+
         if (whiteTurn && white == null) {
-            gameBoard[posX][posY] = new Piece(FieldState.WHITE, )
+            setPiece(new Piece(FieldState.WHITE, posX, posY));
+
+            Move m = new Move(posX, posY, posX, posY);
+            isolationInterface = isolationInterface.play(m);
+            return;
         }
+        if (!whiteTurn && black == null) {
+            setPiece(new Piece(FieldState.BLACK, posX, posY));
+            Move m = new Move(posX, posY, posX, posY);
+            isolationInterface = isolationInterface.play(m);
+            return;
+        }
+
+        //isolationInterface.getAvailableMoves();
     }
 }
