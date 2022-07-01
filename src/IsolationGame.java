@@ -16,41 +16,6 @@ public class IsolationGame implements Isolation {
         availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, -1));
         availableMoves.addAll(getAvailableMovesDirections(board, x, y, 1, -1));
         availableMoves.addAll(getAvailableMovesDirections(board, x, y, -1, 1));
-//        for (int i = 0; i <= field.length - 1; i++) {
-//            Move possibleMove = new Move(x, y, x, y+i);
-//            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
-//            else break;
-//        }
-//
-//        for (int i = 0; i <= field.length - 1; i++) {
-//            Move possibleMove = new Move(x, y, x+i, y);
-//            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
-//            else break;
-//        }
-//
-//        for (int i = 0; i <= field.length - 1; i++) {
-//            Move possibleMove = new Move(x, y, x+i, y+i);
-//            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
-//            else break;
-//        }
-//
-//        for (int i = 0; i <= field.length - 1; i++) {
-//            Move possibleMove = new Move(x, y, x-i, y);
-//            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
-//            else break;
-//        }
-//
-//        for (int i = 0; i <= field.length - 1; i++) {
-//            Move possibleMove = new Move(x, y, x, y-i);
-//            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
-//            else break;
-//        }
-//
-//        for (int i = 0; i <= field.length - 1; i++) {
-//            Move possibleMove = new Move(x, y, x-i, y-i);
-//            if (possibleMove.isValidMove(field)) availableMoves.add(possibleMove)
-//            else break;
-//        }
         return availableMoves;
     }
 
@@ -66,18 +31,21 @@ public class IsolationGame implements Isolation {
 
     @Override
     public Isolation play(Move move) {
-        return null;
+        if (move.isValidMove(board))
+            board[move.destinationX()][move.destinationY()] = FieldState.BLOCKED;
+
+
     }
 }
 
 record Move(int x, int y, int destinationX, int destinationY) {
 
-    public boolean isValidMove(FieldState[][] field) {
-        if (x >= 0 && x < field.length && y >= 0 && y < field.length && destinationX >= 0 && destinationX < field.length && destinationY >= 0 && destinationY < field.length)
+    public boolean isValidMove(FieldState[][] board) {
+        if (x >= 0 && x < board.length && y >= 0 && y < board.length && destinationX >= 0 && destinationX < board.length && destinationY >= 0 && destinationY < board.length)
             return false;
-        FieldState player = field[x][y];
+        FieldState player = board[x][y];
         // Hier eventuell dest nicht extra speichern
-        FieldState dest = field[destinationX][destinationY];
+        FieldState dest = board[destinationX][destinationY];
         assert player != null && player != FieldState.BLOCKED;
         return dest == null;
     }

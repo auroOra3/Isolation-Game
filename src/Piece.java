@@ -11,12 +11,9 @@ public class Piece {
         this.piecePosX = posX;
         this.piecePosY = posY;
         switch (this.playerStatus) {
-            case WHITE -> {
-                crabImg = Resources.greenCrab;
-            }
-            case BLACK -> {
-                crabImg = Resources.redCrab;
-            }
+            case WHITE -> crabImg = Resources.greenCrab;
+            case BLACK -> crabImg = Resources.redCrab;
+
         }
     }
 
