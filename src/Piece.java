@@ -3,10 +3,10 @@ import processing.core.PImage;
 
 public class Piece {
     private int posX, posY;
-    public FieldStatus playerStatus;
+    public FieldState playerStatus;
     private PImage img;
 
-    public Piece(FieldStatus playerStatus, PApplet canvas) {
+    public Piece(FieldState playerStatus, PApplet canvas) {
         loadImage(canvas);
     }
 
@@ -33,7 +33,7 @@ public class Piece {
         return posY;
     }
 
-    public FieldStatus getPlayerStatus() {
+    public FieldState getPlayerStatus() {
         return playerStatus;
     }
 }

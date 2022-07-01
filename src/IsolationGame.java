@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 public class IsolationGame {
-    private FieldStatus[][] field;
+    private FieldState[][] field;
     public IsolationGame(int size) {
-        field = new FieldStatus[size][size];
+        field = new FieldState[size][size];
     }
     public ArrayList<Move> getAvaiableMoves(int x, int y) {
         ArrayList<Move> availableMoves = new ArrayList<>();
@@ -53,7 +53,7 @@ public class IsolationGame {
         return availableMoves;
     }
 
-    private ArrayList<Move> getAvaiableMovesDirections(FieldStatus[][] field, int x, int y, int xMultiplier, int yMultiplier) {
+    private ArrayList<Move> getAvaiableMovesDirections(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 0; i <= field.length - 1; i++) {
             Move possibleMove = new Move(x, y, x-i*xMultiplier, y-i*yMultiplier);
@@ -66,18 +66,18 @@ public class IsolationGame {
 
 record Move(int x, int y, int destinationX, int destinationY) {
 
-    public boolean isValidMove(FieldStatus[][] field) {
+    public boolean isValidMove(FieldState[][] field) {
         if (x >= 0 && x < field.length && y >= 0 && y < field.length && destinationX >= 0 && destinationX < field.length && destinationY >= 0 && destinationY < field.length)
             return false;
-        FieldStatus player = field[x][y];
+        FieldState player = field[x][y];
         // Hier eventuell dest nicht extra speichern
-        FieldStatus dest = field[destinationX][destinationY];
-        assert player != null && player != FieldStatus.BLOCKED;
+        FieldState dest = field[destinationX][destinationY];
+        assert player != null && player != FieldState.BLOCKED;
         return dest == null;
     }
 }
 
-enum FieldStatus {
+enum FieldState {
     BLACK,
     WHITE,
     BLOCKED;

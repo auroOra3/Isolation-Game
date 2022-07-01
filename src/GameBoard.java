@@ -6,24 +6,33 @@ import java.util.Objects;
 
 public class GameBoard {
 
-    public Piece[][] field;
+    private Isolation isolationInterface;
+    public Piece[][] gameBoard;
+    private final int size = 8;
     private Piece black;
     private Piece white;
-
-    public GameBoard(int size) {
-        this.field = new Piece[size][size];
-    }
+    ArrayList<Piece> pieces = new ArrayList<>();
 
     public void setPiece(Piece piece) {
-        field[piece.getPosX()][piece.getPosY()] = piece;
-        if (piece.getPlayerStatus() == FieldStatus.BLACK) {
+        gameBoard[piece.getPosX()][piece.getPosY()] = piece;
+        if (piece.getPlayerStatus() == FieldState.BLACK) {
             black = piece;
-        } else if (piece.getPlayerStatus() == FieldStatus.WHITE) {
+        } else if (piece.getPlayerStatus() == FieldState.WHITE) {
             white = piece;
         }
     }
 
     public void draw(PApplet canvas) {
-        Arrays.stream(field).forEach(row -> Arrays.stream(row).filter(Objects::nonNull).forEach(cell -> cell.draw(canvas)));
+        Arrays.stream(gameBoard).forEach(row -> Arrays.stream(row).filter(Objects::nonNull).forEach(cell -> cell.draw(canvas)));
+    }
+
+    public Piece getPiece(int xPos, int yPos) {
+        return gameBoard[xPos][yPos];
+    }
+
+    public void executeMove(boolean whiteTurn, int posX, int posY) {
+        if (whiteTurn && white == null) {
+            gameBoard[posX][posY] = new Piece(FieldState.WHITE, )
+        }
     }
 }

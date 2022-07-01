@@ -7,9 +7,11 @@ public class IsolationGameUI extends PApplet {
     GameState currentState = GameState.STARTSCREEN;
     int currentFrame = 0, numOfFrames = 92;
     PImage[] images = new PImage[numOfFrames];
-    PImage gamePlayScreen;
+    PImage islandScreen;
     PImage treasureMap;
     PFont bete;
+    private GameBoard gameBoard;
+    private boolean whiteTurn;
 
     public static void main(String[] args) {
         PApplet.runSketch(new String[]{""}, new IsolationGameUI());
@@ -27,11 +29,8 @@ public class IsolationGameUI extends PApplet {
             images[i] = loadImage("./ressources/" + imageName);
         }
         bete = createFont("./ressources/BeteNoirNF.ttf", 128);
-        gamePlayScreen = loadImage("./ressources/frame_42_delay-0.12s.png");
+        islandScreen = loadImage("./ressources/frame_42_delay-0.12s.png");
         treasureMap = loadImage("./ressources/treasureMap.png");
-
-
-
     }
 
     @Override
@@ -66,51 +65,71 @@ public class IsolationGameUI extends PApplet {
     }
 
     public void gameInstructionScreen() {
-
+        background(islandScreen);
+        image(treasureMap, 10 , height-550, 200F*2.6F, 166*2.8F);
 
     }
 
     public void gamePlayScreen() {
-        int xOffset = 80, yOffset = 167;
-        background(gamePlayScreen);
+        int xOffset = 90, yOffset = 171;
+        background(islandScreen);
         image(treasureMap, 10, height-550, 200F* 2.6F, 166F*2.8F);
-        boolean white = true;
+        boolean isWhite = true;
         stroke(color(191,147,84));
         for (int x = 0; x < 350; x+=45) {
             for (int y = 0; y < 350; y+=45) {
-                if(white) fill(color(194,145,78));
-                else fill(color(229,189,128));
+                if(isWhite)
+                    fill(color(194,145,78));
+                else
+                    fill(color(229,189,128));
                 rect(x + xOffset, y + yOffset, 40, 40, 12);
-                white = !white;
+                isWhite = !isWhite;
             }
-            white = !white;
+            isWhite = !isWhite;
         }
-
     }
 
     public void gameOverScreen() {
 
     }
 
-    public void mousePressed() {
+    public void mouseClicked() {
         System.out.println(mouseX);
         System.out.println(mouseY);
+
         switch (currentState) {
             case STARTSCREEN -> {
                    if (mouseX > 152 && mouseX < 389 && mouseY > 578 && mouseY < 616) {
                        startGame();
+
                    }
+            }
+            case INSTRUCTION -> {
+                if (mouseX > 189 && mouseX < 358 && mouseY > 626 && mouseY < 638) {
+                    startInstruction();
+                }
+            }
+            case GAME -> {
+                int posX = (90 + mouseX)/45;
+                int posY = (171 + mouseY)/45;
+                gameBoard.executeMove(whiteTurn, posX, posY);
             }
             case GAMEOVER -> restart();
         }
+    }
+
+    private void startGame() {
+        currentState = GameState.GAME;
+    }
+
+    private void startInstruction() {
+        currentState = GameState.INSTRUCTION;
     }
 
     private void restart() {
         currentState = GameState.STARTSCREEN;
     }
 
-    private void startGame() {
-        currentState = GameState.GAME;
-    }
+
 }
 
