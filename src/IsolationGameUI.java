@@ -37,7 +37,7 @@ public class IsolationGameUI extends PApplet {
             case STARTSCREEN -> gameInitScreen();
             case INSTRUCTION -> gameInstructionScreen();
             case GAME -> gamePlayScreen();
-            case GAMEOVER -> startGameOverScreen();
+            case GAMEOVER -> gameOverScreen();
         }
     }
 
