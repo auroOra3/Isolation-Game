@@ -5,11 +5,18 @@ public class IsolationGameUI extends PApplet {
 
     GameState currentState = GameState.STARTSCREEN;
     private GameBoard gameBoard;
-    private boolean whiteTurn;
+    private boolean greenTurn;
     private int currentFrame = 0;
 
+    public IsolationGameUI(boolean isDevVersion) {
+        if (isDevVersion) {
+            currentState = GameState.GAME;
+        }
+    }
+
     public static void main(String[] args) {
-        PApplet.runSketch(new String[]{""}, new IsolationGameUI());
+        boolean isDevVersion = args.length == 1 && args[0].contains("-dev");
+        PApplet.runSketch(new String[]{""}, new IsolationGameUI(isDevVersion));
     }
 
     @Override
@@ -127,8 +134,8 @@ public class IsolationGameUI extends PApplet {
             case GAME -> {
                 int posX = (mouseX - 90)/45;
                 int posY = (mouseY - 171)/45;
-                gameBoard.executeMove(whiteTurn, posX, posY);
-                whiteTurn = !whiteTurn;
+                gameBoard.executeMove(greenTurn, posX, posY);
+                greenTurn = !greenTurn;
             }
             case GAMEOVER -> startInitScreen();
         }

@@ -9,6 +9,7 @@ public class Resources {
     public static PImage[] menuScreenBackground;
     public static PImage islandScreen;
     public static PImage treasureMap;
+    public static PImage blockedField;
     public static PFont beteFont;
     public static PFont pirateFont;
     public static int numOfFrames = 92;
@@ -19,6 +20,7 @@ public class Resources {
     public static String betePath = "./resources/BeteNoirNF.ttf";
     public static String pirateFontPath = "./resources/PiratesBay.ttf";
     public static String treasureMapPath = "./resources/treasureMap.png";
+    public static String blockedFieldPath = "./resources/blocked.png";
 
     public static void loadRessources(PApplet canvas) {
         menuScreenBackground = new PImage[numOfFrames];
@@ -32,5 +34,6 @@ public class Resources {
         pirateFont = canvas.createFont(pirateFontPath, 128);
         islandScreen = canvas.loadImage(islandScreenPath);
         treasureMap = canvas.loadImage(treasureMapPath);
+        blockedField = canvas.loadImage(blockedFieldPath);
     }
 }
