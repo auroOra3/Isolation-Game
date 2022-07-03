@@ -8,11 +8,11 @@ public class GameBoard {
 
     private Isolation isolationInterface = new IsolationGame();
     public Piece[][] gameBoard;
-    private final int size = 8;
-    private Piece red, green, currentPlayer = null;
+    private Piece red, green;
     ArrayList<Move> availableMovesArray = new ArrayList<>();
 
     public GameBoard() {
+        int size = 8;
         gameBoard = new Piece[size][size];
     }
 
@@ -34,12 +34,12 @@ public class GameBoard {
             canvas.noFill();
             canvas.stroke(canvas.color(190, 0, 0));
             canvas.strokeWeight(2);
-            canvas.circle(move.destX() * 45 + 88 + 45 / 2, move.destY() * 45 + 171 + 45 / 2, 35);
+            canvas.circle(move.destX() * 45 + 88 + 45 / 2, move.destY() * 45 + 169 + 45 / 2, 35);
             canvas.strokeWeight(1);
         }
     }
 
-    public void executeMove(boolean greenTurn, int piecePosX, int piecePosY) {
+    public boolean executeMove(boolean greenTurn, int piecePosX, int piecePosY) {
 
         if (greenTurn && green == null) {
             setPiece(new Piece(FieldState.GREEN, piecePosX, piecePosY));
@@ -48,7 +48,7 @@ public class GameBoard {
             if (red != null) {
                 availableMovesArray = isolationInterface.availableMoves(red.getPiecePosX(), red.getPiecePosY());
             }
-            return;
+            return true;
         }
         if (!greenTurn && red == null) {
             setPiece(new Piece(FieldState.RED, piecePosX, piecePosY));
@@ -57,26 +57,31 @@ public class GameBoard {
             if (green != null) {
                 availableMovesArray = isolationInterface.availableMoves(green.getPiecePosX(), green.getPiecePosY());
             }
-            return;
+            return true;
         }
 
-        if (availableMovesArray.stream().anyMatch(move -> {return move.destX() == piecePosX && move.destY() == piecePosY;})) {
+        if (availableMovesArray.stream().anyMatch(move -> move.destX() == piecePosX && move.destY() == piecePosY)) {
+            Move move;
             if (greenTurn) {
-                Move move = new Move(green.getPiecePosX(), green.getPiecePosY(), piecePosX, piecePosY);
+                move = new Move(green.getPiecePosX(), green.getPiecePosY(), piecePosX, piecePosY);
                 movePiece(green, piecePosX, piecePosY);
-                isolationInterface = isolationInterface.play(move);
             } else {
-                Move move = new Move(red.getPiecePosX(), red.getPiecePosY(), piecePosX, piecePosY);
+                move = new Move(red.getPiecePosX(), red.getPiecePosY(), piecePosX, piecePosY);
                 movePiece(red, piecePosX, piecePosY);
-                isolationInterface = isolationInterface.play(move);
             }
+            isolationInterface = isolationInterface.play(move);
+        } else {
+            return false;
         }
 
         if (greenTurn) {
             availableMovesArray = isolationInterface.availableMoves(red.getPiecePosX(), red.getPiecePosY());
+
         } else {
             availableMovesArray = isolationInterface.availableMoves(green.getPiecePosX(), green.getPiecePosY());
+
         }
+        return true;
     }
 
     private void movePiece(Piece piece, int destX, int destY) {
@@ -84,5 +89,21 @@ public class GameBoard {
         piece.setPiecePosX(destX);
         piece.setPiecePosY(destY);
         gameBoard[destX][destY] = piece;
+    }
+
+    public FieldState whoLost() {
+        if (green == null || red == null) {
+            return null;
+        }
+
+        if (isolationInterface.isGameOver(red.getPiecePosX(), red.getPiecePosY())) {
+            return FieldState.RED;
+        }
+
+        if (isolationInterface.isGameOver(green.getPiecePosX(), green.getPiecePosY())) {
+            return FieldState.GREEN;
+        }
+
+        return null;
     }
 }

@@ -18,7 +18,7 @@ public class Piece {
     }
 
     public void draw(PApplet canvas) {
-        canvas.image(img, piecePosX * 45 + 88, piecePosY * 45 + 171, 45, 45);
+        canvas.image(img, piecePosX * 45 + 88, piecePosY * 45 + 169, 45, 45);
     }
 
     public int getPiecePosX() {

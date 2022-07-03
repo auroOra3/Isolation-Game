@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class IsolationGame implements Isolation {
 
@@ -8,20 +9,21 @@ public class IsolationGame implements Isolation {
 
     public IsolationGame(IsolationGame isolationGame) {
         for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) board[x][y] = isolationGame.board[x][y];
+            for (int y = 0; y < 8; y++)
+                board[x][y] = isolationGame.board[x][y];
         }
     }
 
-    public ArrayList<Move> availableMoves(int x, int y) {
+    public ArrayList<Move> availableMoves(int piecePosX, int piecePosY) {
         ArrayList<Move> availableMoves = new ArrayList<>();
-        availableMoves.addAll(generateDirection(board, x, y, 0, 1));
-        availableMoves.addAll(generateDirection(board, x, y, 0, -1));
-        availableMoves.addAll(generateDirection(board, x, y, 1, 0));
-        availableMoves.addAll(generateDirection(board, x, y, -1, 0));
-        availableMoves.addAll(generateDirection(board, x, y, 1, 1));
-        availableMoves.addAll(generateDirection(board, x, y, -1, -1));
-        availableMoves.addAll(generateDirection(board, x, y, 1, -1));
-        availableMoves.addAll(generateDirection(board, x, y, -1, 1));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 0, 1));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 0, -1));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 1, 0));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, -1, 0));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 1, 1));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, -1, -1));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 1, -1));
+        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, -1, 1));
         return availableMoves;
     }
 
@@ -45,6 +47,12 @@ public class IsolationGame implements Isolation {
         }
         return isolationGame;
 
+    }
+
+    @Override
+    public boolean isGameOver(int piecePosX, int piecePosY) {
+        ArrayList<Move> moves = availableMoves(piecePosX, piecePosY);
+        return moves.isEmpty();
     }
 }
 

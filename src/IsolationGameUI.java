@@ -7,6 +7,7 @@ public class IsolationGameUI extends PApplet {
     private GameBoard gameBoard;
     private boolean greenTurn;
     private int currentFrame = 0;
+    private boolean isValidMove;
 
     public IsolationGameUI(boolean isDevVersion) {
         if (isDevVersion) {
@@ -36,39 +37,40 @@ public class IsolationGameUI extends PApplet {
             case STARTSCREEN -> gameInitScreen();
             case INSTRUCTION -> gameInstructionScreen();
             case GAME -> gamePlayScreen();
-            case GAMEOVER -> gameOverScreen();
+            case GAMEOVERREDWON -> startGameOverScreenRedWon();
+            case GAMEOVERGREENWON -> startGameOverScreenGreenWon();
         }
     }
 
     public void gameInitScreen() {
         frameRate(9.0f);
-        currentFrame = (currentFrame+1) % Resources.numOfFrames;
+        currentFrame = (currentFrame + 1) % Resources.numOfFrames;
         int offset = 0;
         for (int x = -100; x < width; x += Resources.menuScreenBackground[0].width) {
-            background(Resources.menuScreenBackground[(currentFrame+offset) % Resources.numOfFrames]);
-            offset+=2;
+            background(Resources.menuScreenBackground[(currentFrame + offset) % Resources.numOfFrames]);
+            offset += 2;
         }
         textFont(Resources.beteFont);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
-        text("Don´t get stranded", width/2, height-550);
+        text("Don´t get stranded", width / 2, height - 550);
         fill(0, 95, 177);
         textSize(25);
-        text("Click to start", width/2, height-60);
+        text("Click to start", width / 2, height - 60);
         textSize(15);
-        text("Game Instructions", width/2, height-30);
+        text("Game Instructions", width / 2, height - 30);
 
     }
 
     public void gameInstructionScreen() {
         background(Resources.islandScreen);
-        image(Resources.treasureMap, 10 , height-550, 200F*2.6F, 166*2.8F);
+        image(Resources.treasureMap, 10, height - 550, 200F * 2.6F, 166 * 2.8F);
         textFont(Resources.pirateFont);
         textAlign(CENTER);
         fill(0);
         textSize(25);
-        text("Game Instruction", width/2, height-460);
+        text("Game Instruction", width / 2, height - 460);
         textSize(18);
         text("The first player chooses a cell to start\n" +
                 "Each player takes turns\nmoving their player to a new cell\n" +
@@ -79,27 +81,27 @@ public class IsolationGameUI extends PApplet {
                 "If a player is unable to make any further move\n" +
                 "the opponent wins\n" +
                 "Thus the goal of the game is\n" +
-                "to be the last player with a remaining move available", width/2, height-420);
+                "to be the last player with a remaining move available", width / 2, height - 420);
         textFont(Resources.beteFont);
         textAlign(CENTER);
         fill(0, 95, 177);
         textSize(25);
-        text("Go Back", width/2, height-40);
+        text("Go Back", width / 2, height - 40);
 
     }
 
     public void gamePlayScreen() {
         int xOffset = 90, yOffset = 171;
         background(Resources.islandScreen);
-        image(Resources.treasureMap, 10, height-550, 200F*2.6F, 166F*2.8F);
+        image(Resources.treasureMap, 10, height - 550, 200F * 2.6F, 166F * 2.8F);
         boolean isWhite = true;
-        stroke(color(194,145,78));
-        for (int x = 0; x < 350; x+=45) {
-            for (int y = 0; y < 350; y+=45) {
-                if(isWhite)
-                    fill(color(194,145,78));
+        stroke(color(194, 145, 78));
+        for (int x = 0; x < 350; x += 45) {
+            for (int y = 0; y < 350; y += 45) {
+                if (isWhite)
+                    fill(color(194, 145, 78));
                 else
-                    fill(color(229,189,128));
+                    fill(color(229, 189, 128));
                 rect(x + xOffset, y + yOffset, 40, 40, 12);
                 isWhite = !isWhite;
             }
@@ -109,8 +111,13 @@ public class IsolationGameUI extends PApplet {
         gameBoard.draw(this);
     }
 
-    public void gameOverScreen() {
+    public void gameOverScreenRedWon() {
+        background(Resources.treasureMap);
 
+    }
+
+    public void gameOverScreenGreenWon() {
+        background(Resources.sharkAttackScreen);
     }
 
     @Override
@@ -132,12 +139,34 @@ public class IsolationGameUI extends PApplet {
                 }
             }
             case GAME -> {
-                int posX = (mouseX - 90)/45;
-                int posY = (mouseY - 171)/45;
-                gameBoard.executeMove(greenTurn, posX, posY);
-                greenTurn = !greenTurn;
+                int posX = (mouseX - 90) / 45;
+                int posY = (mouseY - 171) / 45;
+                isValidMove = gameBoard.executeMove(greenTurn, posX, posY);
+                if (isValidMove) {
+                    greenTurn = !greenTurn;
+                }
+
+                FieldState gameOver = gameBoard.whoLost();
+                if (gameOver != null) {
+                    if (gameOver == FieldState.GREEN) {
+                        startGameOverScreenGreenWon();
+                    } else if (gameOver == FieldState.RED) {
+                        startGameOverScreenRedWon();
+                    }
+                }
+
             }
-            case GAMEOVER -> startInitScreen();
+            case GAMEOVERREDWON -> {
+
+            }
+            case GAMEOVERGREENWON -> {
+
+            }
+
+
+            //if (mouseX ....) startInitScreen();
+
+
         }
     }
 
@@ -145,12 +174,20 @@ public class IsolationGameUI extends PApplet {
         currentState = GameState.GAME;
     }
 
+    private void startInitScreen() {
+        currentState = GameState.STARTSCREEN;
+    }
+
     private void startInstructionScreen() {
         currentState = GameState.INSTRUCTION;
     }
 
-    private void startInitScreen() {
-        currentState = GameState.STARTSCREEN;
+    private void startGameOverScreenRedWon() {
+        currentState = GameState.GAMEOVERREDWON;
+    }
+
+    private void startGameOverScreenGreenWon() {
+        currentState = GameState.GAMEOVERGREENWON;
     }
 
 
