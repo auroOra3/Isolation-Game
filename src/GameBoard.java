@@ -6,12 +6,11 @@ import java.util.Objects;
 
 public class GameBoard {
 
-    private Isolation isolationInterface;
+    private Isolation isolationInterface = new IsolationGame();
     public Piece[][] gameBoard;
     private final int size = 8;
-    private Piece red, green;
-    ArrayList<ArrayList<Move>> availableMoves = new ArrayList<>();
-
+    private Piece red, green, currentPlayer = null;
+    ArrayList<Move> availableMovesArray = new ArrayList<>();
     public GameBoard() {
         gameBoard = new Piece[size][size];
     }
@@ -30,24 +29,29 @@ public class GameBoard {
 
     public void draw(PApplet canvas) {
         Arrays.stream(gameBoard).forEach(row -> Arrays.stream(row).filter(Objects::nonNull).forEach(cell -> cell.draw(canvas)));
+        for (Move move: availableMovesArray) {
+            canvas.circle(move.destinationX(), move.destinationY(), 90);
+        }
     }
 
-    public void executeMove(boolean whiteTurn, int piecePosX, int piecePosY) {
+    public void executeMove(boolean greenTurn, int piecePosX, int piecePosY) {
 
-        if (whiteTurn && green == null) {
+        if (greenTurn && green == null) {
             setPiece(new Piece(FieldState.GREEN, piecePosX, piecePosY));
             Move move = new Move(piecePosX, piecePosY, piecePosX, piecePosY);
             isolationInterface = isolationInterface.play(move);
             return;
         }
-        if (!whiteTurn && red == null) {
+        if (!greenTurn && red == null) {
             setPiece(new Piece(FieldState.RED, piecePosX, piecePosY));
             Move move = new Move(piecePosX, piecePosY, piecePosX, piecePosY);
             isolationInterface = isolationInterface.play(move);
             return;
         }
 
-        availableMoves.add(isolationInterface.availableMoves(piecePosX, piecePosY));
+        availableMovesArray = isolationInterface.availableMoves(piecePosX, piecePosY);
+
+
 
     }
 }

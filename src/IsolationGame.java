@@ -3,13 +3,15 @@ import java.util.stream.IntStream;
 
 public class IsolationGame implements Isolation {
 
-    private FieldState[][] board;
+    private FieldState[][] board = new FieldState[8][8];
+
+    public IsolationGame() { }
 
     public IsolationGame(IsolationGame isolationGame) {
-        IntStream.range(0, 8).forEach(x -> System.arraycopy(isolationGame.board[x], 0, board[x], 0, 8));
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) board[x][y] = isolationGame.board[x][y];
+        }
     }
-
-
 
     public ArrayList<Move> availableMoves(int x, int y) {
         ArrayList<Move> availableMoves = new ArrayList<>();
@@ -41,9 +43,6 @@ public class IsolationGame implements Isolation {
             isolationGame.board[move.destinationX()][move.destinationY()] = isolationGame.board[move.sourceX()][move.sourceY()];
             isolationGame.board[move.sourceX()][move.sourceY()] = FieldState.BLOCKED;
         }
-        FieldState playerPos = isolationGame.board[move.destinationX()][move.destinationY()];
-
-
         return isolationGame;
 
     }
