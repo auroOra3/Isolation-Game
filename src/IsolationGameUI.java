@@ -37,8 +37,7 @@ public class IsolationGameUI extends PApplet {
             case STARTSCREEN -> gameInitScreen();
             case INSTRUCTION -> gameInstructionScreen();
             case GAME -> gamePlayScreen();
-            case GAMEOVERREDWON -> startGameOverScreenRedWon();
-            case GAMEOVERGREENWON -> startGameOverScreenGreenWon();
+            case GAMEOVER -> startGameOverScreen();
         }
     }
 
@@ -111,13 +110,9 @@ public class IsolationGameUI extends PApplet {
         gameBoard.draw(this);
     }
 
-    public void gameOverScreenRedWon() {
+    public void gameOverScreen() {
         background(Resources.treasureMap);
 
-    }
-
-    public void gameOverScreenGreenWon() {
-        background(Resources.sharkAttackScreen);
     }
 
     @Override
@@ -148,23 +143,16 @@ public class IsolationGameUI extends PApplet {
 
                 FieldState gameOver = gameBoard.whoLost();
                 if (gameOver != null) {
-                    if (gameOver == FieldState.GREEN) {
-                        startGameOverScreenGreenWon();
-                    } else if (gameOver == FieldState.RED) {
-                        startGameOverScreenRedWon();
+                    if (gameOver == FieldState.GREEN || gameOver == FieldState.RED) {
+                        startGameOverScreen();
                     }
                 }
 
             }
-            case GAMEOVERREDWON -> {
-
-            }
-            case GAMEOVERGREENWON -> {
+            case GAMEOVER -> {
 
             }
 
-
-            //if (mouseX ....) startInitScreen();
 
 
         }
@@ -182,13 +170,10 @@ public class IsolationGameUI extends PApplet {
         currentState = GameState.INSTRUCTION;
     }
 
-    private void startGameOverScreenRedWon() {
-        currentState = GameState.GAMEOVERREDWON;
+    private void startGameOverScreen() {
+        currentState = GameState.GAMEOVER;
     }
 
-    private void startGameOverScreenGreenWon() {
-        currentState = GameState.GAMEOVERGREENWON;
-    }
 
 
 }

@@ -2,6 +2,5 @@ public enum GameState {
     STARTSCREEN,
     INSTRUCTION,
     GAME,
-    GAMEOVERREDWON,
-    GAMEOVERGREENWON;
+    GAMEOVER;
 }
