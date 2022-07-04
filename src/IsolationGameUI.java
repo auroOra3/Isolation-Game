@@ -5,9 +5,8 @@ public class IsolationGameUI extends PApplet {
 
     GameState currentState = GameState.STARTSCREEN;
     private GameBoard gameBoard;
-    private boolean greenTurn;
+    private boolean redTurn;
     private int currentFrame = 0;
-    private boolean isValidMove;
     private FieldState whoHasLost;
 
     public IsolationGameUI(boolean isDevVersion) {
@@ -119,10 +118,9 @@ public class IsolationGameUI extends PApplet {
 
         if (whoHasLost == FieldState.GREEN) {
             image(Resources.redCrab, width/2-48, height-210, 90, 90);
-            textSize(30);
-            text("The Sweet Coffer is all Yours", width/2, height-220);
+        } else {
+            image(Resources.greenCrab, width/2-48, height-210, 90, 90);
         }
-        image(Resources.greenCrab, width/2-48, height-210, 90, 90);
         textSize(30);
         text("The Sweet Coffer is all Yours Yo Ho Ho", width/2, height-220);
 
@@ -153,9 +151,19 @@ public class IsolationGameUI extends PApplet {
             case GAME -> {
                 int posX = (mouseX - 90) / 45;
                 int posY = (mouseY - 171) / 45;
-                isValidMove = gameBoard.executeMove(greenTurn, posX, posY);
-                if (isValidMove) {
-                    greenTurn = !greenTurn;
+
+                if (redTurn) {
+                    boolean isValidMove = gameBoard.executeMove(redTurn, posX, posY);
+                    if (isValidMove) {
+                        redTurn = !redTurn;
+                    }
+                }
+
+                if (!redTurn) {
+                    boolean isValidMove = gameBoard.executeBotMove();
+                    if (isValidMove) {
+                        redTurn = !redTurn;
+                    }
                 }
 
                 whoHasLost = gameBoard.whoLost();
@@ -188,9 +196,6 @@ public class IsolationGameUI extends PApplet {
     private void startGameOverScreen() {
         currentState = GameState.GAMEOVER;
     }
-
-
-
 
 }
 

@@ -1,30 +1,34 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 public class IsolationGame implements Isolation {
 
     private FieldState[][] board = new FieldState[8][8];
+    Random random = new Random();
+    int initialDepth = 3;
 
     public IsolationGame() { }
 
     public IsolationGame(IsolationGame isolationGame) {
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++)
-                board[x][y] = isolationGame.board[x][y];
-        }
+        IntStream.range(0, 8).forEach(x -> System.arraycopy(isolationGame.board[x], 0, board[x], 0, 8));
     }
 
-    public ArrayList<Move> availableMoves(int piecePosX, int piecePosY) {
+    public ArrayList<Move> availableMoves(int crabPosX, int crabPosY) {
         ArrayList<Move> availableMoves = new ArrayList<>();
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 0, 1));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 0, -1));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 1, 0));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, -1, 0));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 1, 1));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, -1, -1));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, 1, -1));
-        availableMoves.addAll(generateDirection(board, piecePosX, piecePosY, -1, 1));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 0, 1));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 0, -1));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 1, 0));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, 0));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 1, 1));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, -1));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 1, -1));
+        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, 1));
         return availableMoves;
+    }
+    public Move randomMove(int posX, int posY) {
+        ArrayList<Move> compMoves = availableMoves(posX, posY);
+        return compMoves.get(random.nextInt(compMoves.size()));
     }
 
     private ArrayList<Move> generateDirection(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
@@ -39,14 +43,38 @@ public class IsolationGame implements Isolation {
     }
 
     @Override
+    public Move bestMove(int xPos, int yPos) {
+        return randomMove(xPos, yPos);
+    }
+
+//    @Override
+//    public Move bestMove(int crabPosX, int crabPosY) {
+//        IsolationGame isolationGame = new IsolationGame(this);
+//        maxValue(board, initialDepth, crabPosX, crabPosY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+//    }
+
+//    public void maxValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
+//        int value = Integer.MIN_VALUE;
+//        ArrayList<Move> maxAvailable = availableMoves(maxCrabPosX, maxCrabPosY);
+//
+//        for (int i = 0; i < maxAvailable.size(); i++) {
+//            int minUtil = minValue(maxAvailable.get(i), depth-1, maxCrabPosX, maxCrabPosY, alpha, beta)
+//        }
+//    }
+
+//    public void minValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
+//
+//    }
+
+    @Override
     public Isolation play(Move move) {
         IsolationGame isolationGame = new IsolationGame(this);
         if (move.isValidMove(board)) {
             isolationGame.board[move.destX()][move.destY()] = isolationGame.board[move.x()][move.y()];
             isolationGame.board[move.x()][move.y()] = FieldState.BLOCKED;
         }
-        return isolationGame;
 
+        return isolationGame;
     }
 
     @Override

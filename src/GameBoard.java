@@ -7,24 +7,24 @@ import java.util.Objects;
 public class GameBoard {
 
     private Isolation isolationInterface = new IsolationGame();
-    public Piece[][] gameBoard;
-    private Piece red, green;
+    public Crab[][] gameBoard;
+    private Crab redCrab, greenCrab;
     ArrayList<Move> availableMovesArray = new ArrayList<>();
 
     public GameBoard() {
         int size = 8;
-        gameBoard = new Piece[size][size];
+        gameBoard = new Crab[size][size];
     }
 
-    public void setPiece(Piece piece) {
-        gameBoard[piece.getPiecePosX()][piece.getPiecePosY()] = piece;
-        switch (piece.getPlayerStatus()) {
-            case RED -> red = piece;
-            case GREEN -> green = piece;
+    public void setPiece(Crab crab) {
+        gameBoard[crab.getCrabPosX()][crab.getCrabPosY()] = crab;
+        switch (crab.getPlayerStatus()) {
+            case RED -> redCrab = crab;
+            case GREEN -> greenCrab = crab;
         }
     }
 
-    public Piece getPiece(int piecePosX, int piecePosY) {
+    public Crab getPiece(int piecePosX, int piecePosY) {
         return gameBoard[piecePosX][piecePosY];
     }
 
@@ -39,71 +39,85 @@ public class GameBoard {
         }
     }
 
-    public boolean executeMove(boolean greenTurn, int piecePosX, int piecePosY) {
+    public boolean executeMove(boolean redTurn, int crabPosX, int crabPosY) {
 
-        if (greenTurn && green == null) {
-            setPiece(new Piece(FieldState.GREEN, piecePosX, piecePosY));
-            Move move = new Move(piecePosX, piecePosY, piecePosX, piecePosY);
+
+//        if (!redTurn && greenCrab == null) {
+//            setPiece(new Crab(FieldState.GREEN, crabPosX, crabPosY));
+//            Move move = new Move(crabPosX, crabPosY, crabPosX, crabPosY);
+//            isolationInterface = isolationInterface.play(move);
+//            if (redCrab != null) {
+//                availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
+//            }
+//            return true;
+//        }
+        if (redTurn && redCrab == null) {
+            setPiece(new Crab(FieldState.RED, crabPosX, crabPosY));
+            Move move = new Move(crabPosX, crabPosY, crabPosX, crabPosY);
             isolationInterface = isolationInterface.play(move);
-            if (red != null) {
-                availableMovesArray = isolationInterface.availableMoves(red.getPiecePosX(), red.getPiecePosY());
+            if (greenCrab != null) {
+                availableMovesArray = isolationInterface.availableMoves(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
             }
             return true;
         }
-        if (!greenTurn && red == null) {
-            setPiece(new Piece(FieldState.RED, piecePosX, piecePosY));
-            Move move = new Move(piecePosX, piecePosY, piecePosX, piecePosY);
-            isolationInterface = isolationInterface.play(move);
-            if (green != null) {
-                availableMovesArray = isolationInterface.availableMoves(green.getPiecePosX(), green.getPiecePosY());
-            }
-            return true;
-        }
 
-        if (availableMovesArray.stream().anyMatch(move -> move.destX() == piecePosX && move.destY() == piecePosY)) {
+        if (availableMovesArray.stream().anyMatch(move -> move.destX() == crabPosX && move.destY() == crabPosY)) {
             Move move;
-            if (greenTurn) {
-                move = new Move(green.getPiecePosX(), green.getPiecePosY(), piecePosX, piecePosY);
-                movePiece(green, piecePosX, piecePosY);
+            if (!redTurn) {
+                move = new Move(greenCrab.getCrabPosX(), greenCrab.getCrabPosY(), crabPosX, crabPosY);
+                movePiece(greenCrab, crabPosX, crabPosY);
             } else {
-                move = new Move(red.getPiecePosX(), red.getPiecePosY(), piecePosX, piecePosY);
-                movePiece(red, piecePosX, piecePosY);
+                move = new Move(redCrab.getCrabPosX(), redCrab.getCrabPosY(), crabPosX, crabPosY);
+                movePiece(redCrab, crabPosX, crabPosY);
             }
             isolationInterface = isolationInterface.play(move);
         } else {
             return false;
         }
 
-        if (greenTurn) {
-            availableMovesArray = isolationInterface.availableMoves(red.getPiecePosX(), red.getPiecePosY());
+        if (!redTurn) {
+            availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
 
         } else {
-            availableMovesArray = isolationInterface.availableMoves(green.getPiecePosX(), green.getPiecePosY());
-
+            availableMovesArray = isolationInterface.availableMoves(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
         }
         return true;
     }
 
-    private void movePiece(Piece piece, int destX, int destY) {
-        gameBoard[piece.getPiecePosX()][piece.getPiecePosY()] = new Piece(FieldState.BLOCKED, piece.getPiecePosX(), piece.getPiecePosY());
-        piece.setPiecePosX(destX);
-        piece.setPiecePosY(destY);
-        gameBoard[destX][destY] = piece;
+    public boolean executeBotMove() {
+        if (greenCrab == null) {
+            // TODO Deside on random first move
+            setPiece(new Crab(FieldState.GREEN, 5, 5));
+            Move move = isolationInterface.bestMove(5, 5);
+            isolationInterface = isolationInterface.play(move);
+            return true;
+        }
+
+        Move move = isolationInterface.bestMove(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
+        movePiece(greenCrab, move.destX(), move.destY());
+        isolationInterface = isolationInterface.play(move);
+        return true;
+    }
+
+    private void movePiece(Crab crab, int destX, int destY) {
+        gameBoard[crab.getCrabPosX()][crab.getCrabPosY()] = new Crab(FieldState.BLOCKED, crab.getCrabPosX(), crab.getCrabPosY());
+        crab.setCrabPosX(destX);
+        crab.setCrabPosY(destY);
+        gameBoard[destX][destY] = crab;
     }
 
     public FieldState whoLost() {
-        if (green == null || red == null) {
+        if (greenCrab == null || redCrab == null) {
             return null;
         }
 
-        if (isolationInterface.isGameOver(red.getPiecePosX(), red.getPiecePosY())) {
+        if (isolationInterface.isGameOver(redCrab.getCrabPosX(), redCrab.getCrabPosY())) {
             return FieldState.RED;
         }
 
-        if (isolationInterface.isGameOver(green.getPiecePosX(), green.getPiecePosY())) {
+        if (isolationInterface.isGameOver(greenCrab.getCrabPosX(), greenCrab.getCrabPosY())) {
             return FieldState.GREEN;
         }
-
         return null;
     }
 }
