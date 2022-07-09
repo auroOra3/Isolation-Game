@@ -5,7 +5,7 @@ public class IsolationGameUI extends PApplet {
 
     GameState currentState = GameState.STARTSCREEN;
     private GameBoard gameBoard;
-    private boolean redTurn;
+    private boolean redTurn = true;
     private int currentFrame = 0;
     private FieldState whoHasLost;
 
@@ -153,7 +153,7 @@ public class IsolationGameUI extends PApplet {
                 int posY = (mouseY - 171) / 45;
 
                 if (redTurn) {
-                    boolean isValidMove = gameBoard.executeMove(redTurn, posX, posY);
+                    boolean isValidMove = gameBoard.executeMove(true, posX, posY);
                     if (isValidMove) {
                         redTurn = !redTurn;
                     }

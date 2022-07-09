@@ -55,9 +55,6 @@ public class GameBoard {
             setPiece(new Crab(FieldState.RED, crabPosX, crabPosY));
             Move move = new Move(crabPosX, crabPosY, crabPosX, crabPosY);
             isolationInterface = isolationInterface.play(move);
-            if (greenCrab != null) {
-                availableMovesArray = isolationInterface.availableMoves(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
-            }
             return true;
         }
 
@@ -90,12 +87,14 @@ public class GameBoard {
             setPiece(new Crab(FieldState.GREEN, 5, 5));
             Move move = isolationInterface.bestMove(5, 5);
             isolationInterface = isolationInterface.play(move);
+            availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
             return true;
         }
 
         Move move = isolationInterface.bestMove(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
         movePiece(greenCrab, move.destX(), move.destY());
         isolationInterface = isolationInterface.play(move);
+        availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
         return true;
     }
 
