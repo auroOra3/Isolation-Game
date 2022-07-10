@@ -26,6 +26,12 @@ public class IsolationGame implements Isolation {
         availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, 1));
         return availableMoves;
     }
+
+    @Override
+    public Move bestMove(int xPos, int yPos) {
+        return randomMove(xPos, yPos);
+    }
+
     public Move randomMove(int posX, int posY) {
         ArrayList<Move> compMoves = availableMoves(posX, posY);
         return compMoves.get(random.nextInt(compMoves.size()));
@@ -42,29 +48,24 @@ public class IsolationGame implements Isolation {
         return moves;
     }
 
-    @Override
-    public Move bestMove(int xPos, int yPos) {
-        return randomMove(xPos, yPos);
-    }
-
 //    @Override
 //    public Move bestMove(int crabPosX, int crabPosY) {
 //        IsolationGame isolationGame = new IsolationGame(this);
-//        maxValue(board, initialDepth, crabPosX, crabPosY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+//        return maxValue(board, initialDepth, crabPosX, crabPosY, Integer.MIN_VALUE, Integer.MAX_VALUE);
 //    }
 
-//    public void maxValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
+//    public Move maxValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
 //        int value = Integer.MIN_VALUE;
 //        ArrayList<Move> maxAvailable = availableMoves(maxCrabPosX, maxCrabPosY);
 //
 //        for (int i = 0; i < maxAvailable.size(); i++) {
-//            int minUtil = minValue(maxAvailable.get(i), depth-1, maxCrabPosX, maxCrabPosY, alpha, beta)
+//            int minUtil = minValue(maxAvailable.get(i), depth-1, maxCrabPosX, maxCrabPosY, alpha, beta);
 //        }
 //    }
 
-//    public void minValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
-//
-//    }
+    public void minValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
+
+    }
 
     @Override
     public Isolation play(Move move) {
@@ -94,6 +95,22 @@ record Move(int x, int y, int destX, int destY) {
         assert playerPos != null || playerPos != FieldState.BLOCKED;
         return destination == null;
     }
+}
+
+record Node(GameBoard board, Node node, IsolationGame game) {
+
+    public ArrayList<Node> generateSuccessor(Crab currentPlayer) {
+        GameBoard currentBoard = this.board;
+        ArrayList<Move> possibleMoves = new ArrayList<>();
+        if (currentPlayer.getPlayerStatus() == FieldState.GREEN || currentPlayer.getPlayerStatus() == FieldState.RED) {
+            possibleMoves = game.availableMoves(currentPlayer.getCrabPosX(), currentPlayer.getCrabPosY());
+        }
+
+        for (int i = 0; i < possibleMoves.size(); i++) {
+            GameBoard child = new GameBoard(currentBoard, possibleMoves.get(i), currentPlayer);
+        }
+    }
+
 }
 
 enum FieldState {

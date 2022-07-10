@@ -109,12 +109,16 @@ public class IsolationGameUI extends PApplet {
 
     public void gameOverScreen() {
         background(Resources.treasureIslandScreen);
-        textFont(Resources.pirateFont);
+        textFont(Resources.beteFont);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
-        text("Arrrggghhh\n" +
-                "Congrats Me Matey\n",width / 2, height - 550);
+        text("GAME OVER", width / 2, height - 550);
+        textFont(Resources.pirateFont);
+        textAlign(CENTER);
+        fill(0);
+        textSize(30);
+        text("Congrats Me Matey",width / 2, height - 215);
 
         if (whoHasLost == FieldState.GREEN) {
             image(Resources.redCrab, width/2-48, height-210, 90, 90);
@@ -122,7 +126,7 @@ public class IsolationGameUI extends PApplet {
             image(Resources.greenCrab, width/2-48, height-210, 90, 90);
         }
         textSize(30);
-        text("The Sweet Coffer is all Yours Yo Ho Ho", width/2, height-220);
+        text("The Sweet Coffer is all Yours Arrrggghhh", width/2, height-105);
 
         textFont(Resources.beteFont);
         fill(0, 95, 177);

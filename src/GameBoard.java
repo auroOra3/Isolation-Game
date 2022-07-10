@@ -3,18 +3,25 @@ import processing.core.PApplet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 public class GameBoard {
 
+    private Random random = new Random();
     private Isolation isolationInterface = new IsolationGame();
-    public Crab[][] gameBoard;
-    private Crab redCrab, greenCrab;
+    public Crab[][] gameBoard; private Crab redCrab, greenCrab;
     ArrayList<Move> availableMovesArray = new ArrayList<>();
 
     public GameBoard() {
         int size = 8;
         gameBoard = new Crab[size][size];
     }
+
+    public GameBoard(GameBoard board, Move move, Crab crabby) {
+
+    }
+
+
 
     public void setPiece(Crab crab) {
         gameBoard[crab.getCrabPosX()][crab.getCrabPosY()] = crab;
@@ -40,17 +47,6 @@ public class GameBoard {
     }
 
     public boolean executeMove(boolean redTurn, int crabPosX, int crabPosY) {
-
-
-//        if (!redTurn && greenCrab == null) {
-//            setPiece(new Crab(FieldState.GREEN, crabPosX, crabPosY));
-//            Move move = new Move(crabPosX, crabPosY, crabPosX, crabPosY);
-//            isolationInterface = isolationInterface.play(move);
-//            if (redCrab != null) {
-//                availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
-//            }
-//            return true;
-//        }
         if (redTurn && redCrab == null) {
             setPiece(new Crab(FieldState.RED, crabPosX, crabPosY));
             Move move = new Move(crabPosX, crabPosY, crabPosX, crabPosY);
@@ -83,10 +79,19 @@ public class GameBoard {
 
     public boolean executeBotMove() {
         if (greenCrab == null) {
-            // TODO Deside on random first move
-            setPiece(new Crab(FieldState.GREEN, 5, 5));
-            Move move = isolationInterface.bestMove(5, 5);
-            isolationInterface = isolationInterface.play(move);
+            int randomX = random.nextInt(0, 7);
+            int randomY = random.nextInt(0,7);
+            while(true) {
+                if (gameBoard[randomX][randomY] == null) {
+                    setPiece(new Crab(FieldState.GREEN, randomX, randomY));
+                    Move move = isolationInterface.bestMove(randomX, randomY);
+                    isolationInterface = isolationInterface.play(move);
+                    break;
+                } else {
+                    randomX = random.nextInt(0, 7);
+                    randomY = random.nextInt(0,7);
+                }
+            }
             availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
             return true;
         }
