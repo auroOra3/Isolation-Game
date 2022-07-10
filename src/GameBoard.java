@@ -9,7 +9,8 @@ public class GameBoard {
 
     private Random random = new Random();
     private Isolation isolationInterface = new IsolationGame();
-    public Crab[][] gameBoard; private Crab redCrab, greenCrab;
+    public Crab[][] gameBoard;
+    private Crab redCrab, greenCrab;
     ArrayList<Move> availableMovesArray = new ArrayList<>();
 
     public GameBoard() {
@@ -20,7 +21,6 @@ public class GameBoard {
     public GameBoard(GameBoard board, Move move, Crab crabby) {
 
     }
-
 
 
     public void setPiece(Crab crab) {
@@ -71,32 +71,26 @@ public class GameBoard {
         if (!redTurn) {
             availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
 
-        } else {
-            availableMovesArray = isolationInterface.availableMoves(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
         }
         return true;
     }
 
     public boolean executeBotMove() {
         if (greenCrab == null) {
-            int randomX = random.nextInt(0, 7);
-            int randomY = random.nextInt(0,7);
-            while(true) {
-                if (gameBoard[randomX][randomY] == null) {
-                    setPiece(new Crab(FieldState.GREEN, randomX, randomY));
-                    Move move = isolationInterface.bestMove(randomX, randomY);
-                    isolationInterface = isolationInterface.play(move);
-                    break;
-                } else {
-                    randomX = random.nextInt(0, 7);
-                    randomY = random.nextInt(0,7);
-                }
-            }
+            Move m;
+            do {
+                int randomX = random.nextInt(0, 7);
+                int randomY = random.nextInt(0, 7);
+                m = new Move(randomX, randomY, randomX, randomY);
+            } while (gameBoard[m.x()][m.y()] != null);
+            isolationInterface = isolationInterface.play(m);
+            greenCrab = new Crab(FieldState.GREEN, m.x(), m.y());
+            gameBoard[m.x()][m.y()] = greenCrab;
             availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
             return true;
         }
 
-        Move move = isolationInterface.bestMove(greenCrab.getCrabPosX(), greenCrab.getCrabPosY());
+        Move move = isolationInterface.bestMove();
         movePiece(greenCrab, move.destX(), move.destY());
         isolationInterface = isolationInterface.play(move);
         availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
