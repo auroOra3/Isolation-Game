@@ -20,76 +20,18 @@ public class IsolationGame implements Isolation {
 
     public ArrayList<Move> availableMoves(int crabPosX, int crabPosY) {
         ArrayList<Move> availableMoves = new ArrayList<>();
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 0, 1));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 0, -1));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 1, 0));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, 0));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 1, 1));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, -1));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, 1, -1));
-        availableMoves.addAll(generateDirection(board, crabPosX, crabPosY, -1, 1));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, 0, 1));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, 0, -1));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, 1, 0));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, -1, 0));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, 1, 1));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, -1, -1));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, 1, -1));
+        availableMoves.addAll(availableDirection(board, crabPosX, crabPosY, -1, 1));
         return availableMoves;
     }
 
-    @Override
-    public Move bestMove() {
-        assert greenCrab != null: "Greencrab should be set";
-        ArrayList<Move> moves = availableMoves(greenCrab.x(), greenCrab.y());
-        Move bestMove = null;
-        int bestMoveEval = Integer.MAX_VALUE;
-        for (Move m: moves) {
-            int eval = minmax(3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
-            if (bestMoveEval > eval) {
-                bestMove = m;
-                bestMoveEval = eval;
-            }
-        }
-
-        return bestMove;
-    }
-
-    private int evaluate() {
-        assert redCrab != null && greenCrab != null : "Green and Red should be set";
-        return availableMoves(redCrab.x(), redCrab.y()).size() - availableMoves(greenCrab.x(), greenCrab.y()).size();
-    }
-
-    private int minmax(int depth, int alpha, int beta, boolean maxCrab) {
-        assert redCrab != null && greenCrab != null : "Green and Red should be set";
-        if (depth == 0 || isGameOver(redCrab.x(), redCrab.y()) || isGameOver(greenCrab.x(), greenCrab.y())) {
-            return evaluate();
-        }
-
-        if (maxCrab) {
-            int maxEval = Integer.MIN_VALUE;
-            for (Move m: availableMoves(redCrab.x(), redCrab.y())) {
-                int eval = play(m).minmax(depth - 1, alpha, beta, false);
-                maxEval = Math.max(maxEval, eval);
-                alpha = Math.max(alpha, eval);
-                if (beta <= alpha) {
-                    break;
-                }
-            }
-            return maxEval;
-        }
-
-        int minEval = Integer.MAX_VALUE;
-        for (Move m: availableMoves(greenCrab.x(), greenCrab.y())) {
-            int eval = play(m).minmax(depth - 1, alpha, beta, true);
-            minEval = Math.min(minEval, eval);
-            alpha = Math.min(alpha, eval);
-            if (beta <= alpha) {
-                break;
-            }
-        }
-        return minEval;
-    }
-
-    public Move randomMove(int posX, int posY) {
-        ArrayList<Move> compMoves = availableMoves(posX, posY);
-        return compMoves.get(random.nextInt(compMoves.size()));
-    }
-
-    private ArrayList<Move> generateDirection(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
+    private ArrayList<Move> availableDirection(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 1; i <= field.length - 1; i++) {
             Move possibleMove = new Move(x, y, x - i * xMultiplier, y - i * yMultiplier);
@@ -100,23 +42,55 @@ public class IsolationGame implements Isolation {
         return moves;
     }
 
-//    @Override
-//    public Move bestMove(int crabPosX, int crabPosY) {
-//        IsolationGame isolationGame = new IsolationGame(this);
-//        return maxValue(board, initialDepth, crabPosX, crabPosY, Integer.MIN_VALUE, Integer.MAX_VALUE);
-//    }
+    @Override
+    public Move bestMove() {
+        assert greenCrab != null: "Green crabby must be set.";
+        ArrayList<Move> moves = availableMoves(greenCrab.x(), greenCrab.y());
+        Move bestMove = null;
+        int bestMoveEval = Integer.MAX_VALUE;
+        for (Move move : moves) {
+            int eval = miniMaxAlphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+            if (bestMoveEval > eval) {
+                bestMove = move;
+                bestMoveEval = eval;
+            }
+        }
+        return bestMove;
+    }
 
-//    public Move maxValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
-//        int value = Integer.MIN_VALUE;
-//        ArrayList<Move> maxAvailable = availableMoves(maxCrabPosX, maxCrabPosY);
-//
-//        for (int i = 0; i < maxAvailable.size(); i++) {
-//            int minUtil = minValue(maxAvailable.get(i), depth-1, maxCrabPosX, maxCrabPosY, alpha, beta);
-//        }
-//    }
+    private int evaluate() {
+        assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
+        return availableMoves(redCrab.x(), redCrab.y()).size() - availableMoves(greenCrab.x(), greenCrab.y()).size();
+    }
 
-    public void minValue(FieldState[][] maxBoard, int depth, int maxCrabPosX, int maxCrabPosY, int alpha, int beta) {
+    private int miniMaxAlphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
+        assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
+        if (depth == 0 || isGameOver(redCrab.x(), redCrab.y()) || isGameOver(greenCrab.x(), greenCrab.y()))
+            return evaluate();
 
+        if (maxCrab) {
+            int maxEval = Integer.MIN_VALUE;
+            for (Move move: availableMoves(redCrab.x(), redCrab.y())) {
+                int eval = play(move).miniMaxAlphaBeta(depth - 1, alpha, beta, false);
+                maxEval = Math.max(maxEval, eval);
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            return maxEval;
+        }
+
+        int minEval = Integer.MAX_VALUE;
+        for (Move move: availableMoves(greenCrab.x(), greenCrab.y())) {
+            int eval = play(move).miniMaxAlphaBeta(depth - 1, alpha, beta, true);
+            minEval = Math.min(minEval, eval);
+            alpha = Math.min(alpha, eval);
+            if (beta <= alpha) {
+                break;
+            }
+        }
+        return minEval;
     }
 
     @Override
@@ -141,7 +115,6 @@ public class IsolationGame implements Isolation {
                 redCrab = new Location(move.destX(), move.destY());
             }
         }
-
         return isolationGame;
     }
 
@@ -156,7 +129,6 @@ record Location(int x, int y) {
 }
 
 record Move(int x, int y, int destX, int destY) {
-
     public boolean isValidMove(FieldState[][] board) {
         if (x < 0 || x >= board.length || y < 0 || y >= board.length || destX < 0 || destX >= board.length || destY < 0 || destY >= board.length)
             return false;
@@ -166,22 +138,6 @@ record Move(int x, int y, int destX, int destY) {
         return destination == null;
     }
 }
-//
-//record Node(GameBoard board, Node node, IsolationGame game) {
-//
-//    public ArrayList<Node> generateSuccessor(Crab currentPlayer) {
-//        GameBoard currentBoard = this.board;
-//        ArrayList<Move> possibleMoves = new ArrayList<>();
-//        if (currentPlayer.getPlayerStatus() == FieldState.GREEN || currentPlayer.getPlayerStatus() == FieldState.RED) {
-//            possibleMoves = game.availableMoves(currentPlayer.getCrabPosX(), currentPlayer.getCrabPosY());
-//        }
-//
-//        for (int i = 0; i < possibleMoves.size(); i++) {
-//            GameBoard child = new GameBoard(currentBoard, possibleMoves.get(i), currentPlayer);
-//        }
-//    }
-//
-//}
 
 enum FieldState {
     RED,

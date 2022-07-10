@@ -18,11 +18,6 @@ public class GameBoard {
         gameBoard = new Crab[size][size];
     }
 
-    public GameBoard(GameBoard board, Move move, Crab crabby) {
-
-    }
-
-
     public void setPiece(Crab crab) {
         gameBoard[crab.getCrabPosX()][crab.getCrabPosY()] = crab;
         switch (crab.getPlayerStatus()) {
@@ -55,22 +50,11 @@ public class GameBoard {
         }
 
         if (availableMovesArray.stream().anyMatch(move -> move.destX() == crabPosX && move.destY() == crabPosY)) {
-            Move move;
-            if (!redTurn) {
-                move = new Move(greenCrab.getCrabPosX(), greenCrab.getCrabPosY(), crabPosX, crabPosY);
-                movePiece(greenCrab, crabPosX, crabPosY);
-            } else {
-                move = new Move(redCrab.getCrabPosX(), redCrab.getCrabPosY(), crabPosX, crabPosY);
-                movePiece(redCrab, crabPosX, crabPosY);
-            }
+            Move move = new Move(redCrab.getCrabPosX(), redCrab.getCrabPosY(), crabPosX, crabPosY);
+            movePiece(redCrab, crabPosX, crabPosY);
             isolationInterface = isolationInterface.play(move);
         } else {
             return false;
-        }
-
-        if (!redTurn) {
-            availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
-
         }
         return true;
     }
@@ -105,17 +89,10 @@ public class GameBoard {
     }
 
     public FieldState whoLost() {
-        if (greenCrab == null || redCrab == null) {
+        if (greenCrab == null || redCrab == null)
             return null;
-        }
-
-        if (isolationInterface.isGameOver(redCrab.getCrabPosX(), redCrab.getCrabPosY())) {
+        if (isolationInterface.isGameOver(redCrab.getCrabPosX(), redCrab.getCrabPosY()))
             return FieldState.RED;
-        }
-
-        if (isolationInterface.isGameOver(greenCrab.getCrabPosX(), greenCrab.getCrabPosY())) {
-            return FieldState.GREEN;
-        }
-        return null;
+        return isolationInterface.isGameOver(greenCrab.getCrabPosX(), greenCrab.getCrabPosY()) ? FieldState.GREEN : null;
     }
 }
