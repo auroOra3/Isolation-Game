@@ -179,6 +179,7 @@ public class IsolationGameUI extends PApplet {
             }
             case GAMEOVER -> {
                 if (mouseX > 190 && mouseX < 353 && mouseY > 610 && mouseY < 630) {
+                    gameBoard = new GameBoard();
                     startInitScreen();
                 }
             }

@@ -52,7 +52,7 @@ public class IsolationGame implements Isolation {
         Move bestMove = null;
         int bestMoveEval = Integer.MAX_VALUE;
         for (Move move : moves) {
-            int eval = miniMaxAlphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+            int eval = miniMaxAlphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
             if (bestMoveEval > eval) {
                 bestMove = move;
                 bestMoveEval = eval;
@@ -109,13 +109,13 @@ public class IsolationGame implements Isolation {
                     isolationGame.greenCrab = new Location(move.x(), move.y());
                 }
             } else {
+                if (isolationGame.board[move.x()][move.y()] == FieldState.GREEN) {
+                    isolationGame.greenCrab = new Location(move.destX(), move.destY());
+                } else if (isolationGame.board[move.x()][move.y()] == FieldState.RED) {
+                    isolationGame.redCrab = new Location(move.destX(), move.destY());
+                }
                 isolationGame.board[move.destX()][move.destY()] = isolationGame.board[move.x()][move.y()];
                 isolationGame.board[move.x()][move.y()] = FieldState.BLOCKED;
-            }
-            if (isolationGame.board[move.x()][move.y()] == FieldState.GREEN) {
-                isolationGame.greenCrab = new Location(move.destX(), move.destY());
-            } else if (isolationGame.board[move.x()][move.y()] == FieldState.RED) {
-                isolationGame.redCrab = new Location(move.destX(), move.destY());
             }
         }
         return isolationGame;
