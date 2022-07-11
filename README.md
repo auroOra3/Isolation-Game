@@ -1,1 +1,1 @@
-# Isolation-Game
+# game.Isolation-Game

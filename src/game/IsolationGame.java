@@ -1,3 +1,5 @@
+package game;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -129,6 +131,13 @@ public class IsolationGame implements Isolation {
         ArrayList<Move> moves = availableMoves(piecePosX, piecePosY);
         return moves.isEmpty();
     }
+}
+
+interface Isolation {
+    ArrayList<Move> availableMoves(int posX, int posY);
+    Move bestMove();
+    IsolationGame play(Move move);
+    boolean isGameOver(int x, int y);
 }
 
 record Location(int x, int y) { }

@@ -1,3 +1,5 @@
+package game;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -11,9 +13,9 @@ public class Crab {
         this.crabPosX = posX;
         this.crabPosY = posY;
         switch (this.playerStatus) {
-            case GREEN -> img = Images.greenCrab;
-            case RED -> img = Images.redCrab;
-            case BLOCKED -> img = Images.blockedField;
+            case FieldState.GREEN -> img = Images.greenCrab;
+            case FieldState.RED -> img = Images.redCrab;
+            case FieldState.BLOCKED -> img = Images.blockedField;
         }
     }
 
