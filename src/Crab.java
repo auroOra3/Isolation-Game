@@ -11,9 +11,9 @@ public class Crab {
         this.crabPosX = posX;
         this.crabPosY = posY;
         switch (this.playerStatus) {
-            case GREEN -> img = Resources.greenCrab;
-            case RED -> img = Resources.redCrab;
-            case BLOCKED -> img = Resources.blockedField;
+            case GREEN -> img = Images.greenCrab;
+            case RED -> img = Images.redCrab;
+            case BLOCKED -> img = Images.blockedField;
         }
     }
 

@@ -27,7 +27,7 @@ public class IsolationGameUI extends PApplet {
 
     @Override
     public void setup() {
-        Resources.loadRessources(this);
+        Images.imagePath(this);
         this.gameBoard = new GameBoard();
     }
 
@@ -43,13 +43,13 @@ public class IsolationGameUI extends PApplet {
 
     public void gameInitScreen() {
         frameRate(9.0f);
-        currentFrame = (currentFrame + 1) % Resources.numOfFrames;
+        currentFrame = (currentFrame + 1) % Images.numOfFrames;
         int offset = 0;
-        for (int x = -100; x < width; x += Resources.menuScreenBackground[0].width) {
-            background(Resources.menuScreenBackground[(currentFrame + offset) % Resources.numOfFrames]);
+        for (int x = -100; x < width; x += Images.menuScreenBackground[0].width) {
+            background(Images.menuScreenBackground[(currentFrame + offset) % Images.numOfFrames]);
             offset += 2;
         }
-        textFont(Resources.beteFont);
+        textFont(Images.beteFont);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
@@ -62,9 +62,9 @@ public class IsolationGameUI extends PApplet {
     }
 
     public void gameInstructionScreen() {
-        background(Resources.islandScreen);
-        image(Resources.treasureMap, 10, height - 550, 200F * 2.6F, 166 * 2.8F);
-        textFont(Resources.pirateFont);
+        background(Images.islandScreen);
+        image(Images.treasureMap, 10, height - 550, 200F * 2.6F, 166 * 2.8F);
+        textFont(Images.pirateFont);
         textAlign(CENTER);
         fill(103, 40, 5);
         textSize(25);
@@ -80,7 +80,7 @@ public class IsolationGameUI extends PApplet {
                 "the opponent wins\n" +
                 "Thus the goal of the game is\n" +
                 "to be the last player with a remaining move available", width / 2, height - 420);
-        textFont(Resources.beteFont);
+        textFont(Images.beteFont);
         fill(0, 95, 177);
         textSize(25);
         text("Go Back", width / 2, height - 40);
@@ -89,8 +89,8 @@ public class IsolationGameUI extends PApplet {
 
     public void gamePlayScreen() {
         int xOffset = 90, yOffset = 171;
-        background(Resources.islandScreen);
-        image(Resources.treasureMap, 10, height - 550, 200F * 2.6F, 166F * 2.8F);
+        background(Images.islandScreen);
+        image(Images.treasureMap, 10, height - 550, 200F * 2.6F, 166F * 2.8F);
         stroke(color(194, 145, 78));
         boolean isGreenTurn = true;
         for (int x = 0; x < 350; x += 45) {
@@ -108,27 +108,27 @@ public class IsolationGameUI extends PApplet {
     }
 
     public void gameOverScreen() {
-        background(Resources.treasureIslandScreen);
-        textFont(Resources.beteFont);
+        background(Images.treasureIslandScreen);
+        textFont(Images.beteFont);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
         text("GAME OVER", width / 2, height - 550);
-        textFont(Resources.pirateFont);
+        textFont(Images.pirateFont);
         textAlign(CENTER);
         fill(0);
         textSize(30);
         text("Congrats Me Matey",width / 2, height - 215);
 
         if (whoHasLost == FieldState.GREEN) {
-            image(Resources.redCrab, width/2-48, height-210, 90, 90);
+            image(Images.redCrab, width/2-48, height-210, 90, 90);
         } else {
-            image(Resources.greenCrab, width/2-48, height-210, 90, 90);
+            image(Images.greenCrab, width/2-48, height-210, 90, 90);
         }
         textSize(30);
         text("The Sweet Coffer is all Yours Arrrggghhh", width/2, height-105);
 
-        textFont(Resources.beteFont);
+        textFont(Images.beteFont);
         fill(0, 95, 177);
         textSize(25);
         text("Play Again", width / 2, height - 40);

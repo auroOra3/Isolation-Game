@@ -2,7 +2,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
-public class Resources {
+public class Images {
 
     public static PImage redCrab;
     public static PImage greenCrab;
@@ -24,7 +24,7 @@ public class Resources {
     public static String treasureMapPath = "./resources/treasureMap.png";
     public static String blockedFieldPath = "./resources/blocked.png";
 
-    public static void loadRessources(PApplet canvas) {
+    public static void imagePath(PApplet canvas) {
         menuScreenBackground = new PImage[numOfFrames];
         redCrab = canvas.loadImage(redCrabPath);
         greenCrab = canvas.loadImage(whiteCrabPath);

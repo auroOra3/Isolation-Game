@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 public class IsolationGame implements Isolation {
 
@@ -15,9 +14,7 @@ public class IsolationGame implements Isolation {
         this.greenCrab = oldIsolationGame.greenCrab;
         this.redCrab = oldIsolationGame.redCrab;
         for (int x = 0; x < board.length; x++) {
-            for (int y = 0; y < board.length; y++) {
-                board[x][y] = oldIsolationGame.board[x][y];
-            }
+            System.arraycopy(oldIsolationGame.board[x], 0, board[x], 0, board.length);
         }
     }
 
@@ -49,16 +46,22 @@ public class IsolationGame implements Isolation {
     public Move bestMove() {
         assert greenCrab != null: "Green crabby must be set.";
         ArrayList<Move> moves = availableMoves(greenCrab.x(), greenCrab.y());
-        Move bestMove = null;
-        int bestMoveEval = Integer.MAX_VALUE;
-        for (Move move : moves) {
-            int eval = miniMaxAlphaBeta(4, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
-            if (bestMoveEval > eval) {
-                bestMove = move;
-                bestMoveEval = eval;
+        if (moves.size() > 0) {
+            ArrayList<Move> bestMoves = new ArrayList<>();
+            int bestMoveEval = Integer.MAX_VALUE;
+            for (Move move : moves) {
+                int eval = miniMaxAlphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                if (bestMoveEval > eval) {
+                    bestMoveEval = eval;
+                    bestMoves.clear();
+                    bestMoves.add(move);
+                } else if (bestMoveEval == eval) {
+                    bestMoves.add(move);
+                }
             }
+            return bestMoves.get(random.nextInt(bestMoves.size()));
         }
-        return bestMove;
+        return null;
     }
 
     private int evaluate() {
@@ -128,8 +131,7 @@ public class IsolationGame implements Isolation {
     }
 }
 
-record Location(int x, int y) {
-}
+record Location(int x, int y) { }
 
 record Move(int x, int y, int destX, int destY) {
     public boolean isValidMove(FieldState[][] board) {
