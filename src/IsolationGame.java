@@ -6,16 +6,19 @@ public class IsolationGame implements Isolation {
 
     private FieldState[][] board = new FieldState[8][8];
     private Location redCrab = null, greenCrab = null;
-    Random random = new Random();
-    int initialDepth = 3;
+    private static Random random = new Random();
 
     public IsolationGame() {
     }
 
-    public IsolationGame(IsolationGame isolationGame) {
-        this.greenCrab = isolationGame.greenCrab;
-        this.redCrab = isolationGame.redCrab;
-        IntStream.range(0, 8).forEach(x -> System.arraycopy(isolationGame.board[x], 0, board[x], 0, 8));
+    public IsolationGame(IsolationGame oldIsolationGame) {
+        this.greenCrab = oldIsolationGame.greenCrab;
+        this.redCrab = oldIsolationGame.redCrab;
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board.length; y++) {
+                board[x][y] = oldIsolationGame.board[x][y];
+            }
+        }
     }
 
     public ArrayList<Move> availableMoves(int crabPosX, int crabPosY) {
@@ -34,7 +37,7 @@ public class IsolationGame implements Isolation {
     private ArrayList<Move> availableDirection(FieldState[][] field, int x, int y, int xMultiplier, int yMultiplier) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 1; i <= field.length - 1; i++) {
-            Move possibleMove = new Move(x, y, x - i * xMultiplier, y - i * yMultiplier);
+            Move possibleMove = new Move(x, y, x + i * xMultiplier, y + i * yMultiplier);
             if (possibleMove.isValidMove(field)) {
                 moves.add(possibleMove);
             } else break;
@@ -110,9 +113,9 @@ public class IsolationGame implements Isolation {
                 isolationGame.board[move.x()][move.y()] = FieldState.BLOCKED;
             }
             if (isolationGame.board[move.x()][move.y()] == FieldState.GREEN) {
-                greenCrab = new Location(move.destX(), move.destY());
+                isolationGame.greenCrab = new Location(move.destX(), move.destY());
             } else if (isolationGame.board[move.x()][move.y()] == FieldState.RED) {
-                redCrab = new Location(move.destX(), move.destY());
+                isolationGame.redCrab = new Location(move.destX(), move.destY());
             }
         }
         return isolationGame;
