@@ -1,1 +1,1 @@
-# game.Isolation-Game
+# main.java.Isolation-Game

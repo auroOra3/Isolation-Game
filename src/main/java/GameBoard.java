@@ -1,4 +1,4 @@
-package game;
+package main.java;
 
 import processing.core.PApplet;
 
@@ -68,18 +68,18 @@ public class GameBoard {
                 int randomX = random.nextInt(0, 7);
                 int randomY = random.nextInt(0, 7);
                 m = new Move(randomX, randomY, randomX, randomY);
-            } while (gameBoard[m.x()][m.y()] != null);
+            } while (gameBoard[m.sourceX()][m.sourceY()] != null);
             isolationInterface = isolationInterface.play(m);
-            greenCrab = new Crab(FieldState.GREEN, m.x(), m.y());
-            gameBoard[m.x()][m.y()] = greenCrab;
-            availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
+            greenCrab = new Crab(FieldState.GREEN, m.sourceX(), m.sourceY());
+            gameBoard[m.sourceX()][m.sourceY()] = greenCrab;
+            availableMovesArray = isolationInterface.legalMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
             return true;
         }
 
         Move move = isolationInterface.bestMove();
         movePiece(greenCrab, move.destX(), move.destY());
         isolationInterface = isolationInterface.play(move);
-        availableMovesArray = isolationInterface.availableMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
+        availableMovesArray = isolationInterface.legalMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
         return true;
     }
 

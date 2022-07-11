@@ -1,4 +1,4 @@
-package game;
+package main.java;
 
 import processing.core.PApplet;
 import processing.core.PFont;

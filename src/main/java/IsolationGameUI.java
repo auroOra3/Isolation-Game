@@ -1,4 +1,4 @@
-package game;
+package main.java;
 
 import processing.core.PApplet;
 
@@ -11,15 +11,14 @@ public class IsolationGameUI extends PApplet {
     private int currentFrame = 0;
     private FieldState whoHasLost;
 
-    public IsolationGameUI(boolean isDevVersion) {
-        if (isDevVersion) {
-            currentState = GameState.GAMEOVER;
-        }
+    public IsolationGameUI(boolean isDev) {
+        if (isDev)
+            currentState = GameState.GAME;
     }
 
     public static void main(String[] args) {
-        boolean isDevVersion = args.length == 1 && args[0].contains("-dev");
-        PApplet.runSketch(new String[]{""}, new IsolationGameUI(isDevVersion));
+        boolean isDev = args.length == 1 && args[0].contains("-dev");
+        PApplet.runSketch(new String[]{""}, new IsolationGameUI(isDev));
     }
 
     @Override
@@ -80,7 +79,7 @@ public class IsolationGameUI extends PApplet {
                 "or by the other player\n" +
                 "If a player is unable to make any further move\n" +
                 "the opponent wins\n" +
-                "Thus the goal of the game is\n" +
+                "Thus the goal of the main.game is\n" +
                 "to be the last player with a remaining move available", width / 2, height - 420);
         textFont(Images.beteFont);
         fill(0, 95, 177);
@@ -117,19 +116,12 @@ public class IsolationGameUI extends PApplet {
         textSize(40);
         text("GAME OVER", width / 2, height - 550);
         textFont(Images.pirateFont);
-        textAlign(CENTER);
         fill(0);
         textSize(30);
         text("Congrats Me Matey",width / 2, height - 215);
-
-        if (whoHasLost == FieldState.GREEN) {
-            image(Images.redCrab, width/2-48, height-210, 90, 90);
-        } else {
-            image(Images.greenCrab, width/2-48, height-210, 90, 90);
-        }
+        image(whoHasLost == FieldState.GREEN ? Images.redCrab : Images.greenCrab, width/2-48, height-210, 90, 90);
         textSize(30);
         text("The Sweet Coffer is all Yours Arrrggghhh", width/2, height-105);
-
         textFont(Images.beteFont);
         fill(0, 95, 177);
         textSize(25);

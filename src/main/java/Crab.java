@@ -1,4 +1,4 @@
-package game;
+package main.java;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -12,10 +12,12 @@ public class Crab {
         this.playerStatus = playerStatus;
         this.crabPosX = posX;
         this.crabPosY = posY;
-        switch (this.playerStatus) {
-            case FieldState.GREEN -> img = Images.greenCrab;
-            case FieldState.RED -> img = Images.redCrab;
-            case FieldState.BLOCKED -> img = Images.blockedField;
+        if (this.playerStatus == FieldState.GREEN) {
+            img = Images.greenCrab;
+        } else if (this.playerStatus == FieldState.RED) {
+            img = Images.redCrab;
+        } else if (this.playerStatus == FieldState.BLOCKED) {
+            img = Images.blockedField;
         }
     }
 
