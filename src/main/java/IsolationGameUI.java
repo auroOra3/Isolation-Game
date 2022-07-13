@@ -19,7 +19,7 @@ public class IsolationGameUI extends PApplet {
 
     public IsolationGameUI(boolean isDev) {
         if (isDev)
-            currentState = GameState.GAME;
+            currentState = GameState.GAMEOVER;
     }
 
     public static void main(String[] args) {

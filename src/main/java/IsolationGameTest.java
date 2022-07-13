@@ -1,21 +1,18 @@
 package main.java;
 
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IsolationGameTest {
 
     @Test
-    public void testValidMoves() {
-        IsolationGame game = new IsolationGame();
-        game = game.play(new Move(5, 5, 5, 5));
-        ArrayList<Move> moves = game.legalMoves(5, 5);
+    public void testLegalMoves() {
+        IsolationGame isoGame = new IsolationGame();
+        isoGame = isoGame.play(new Move(5, 5, 5, 5));
+        ArrayList<Move> moves = isoGame.legalMoves(5, 5);
         assertEquals(25, moves.size());
         assertTrue(containsMove(5, 7, moves));
         assertTrue(containsMove(5, 6, moves));
@@ -45,12 +42,12 @@ public class IsolationGameTest {
     }
 
     @Test
-    public void testValidMovesWITH() {
-        IsolationGame game = new IsolationGame();
-        game = game.play(new Move(4, 4, 4, 4));
-        game = game.play(new Move(6, 6, 6, 6));
-        game = game.play(new Move(4, 4, 5, 5));
-        ArrayList<Move> moves = game.legalMoves(5, 5);
+    public void testLegalMovesWhichBlocked() {
+        IsolationGame isoGame = new IsolationGame();
+        isoGame = isoGame.play(new Move(4, 4, 4, 4));
+        isoGame = isoGame.play(new Move(6, 6, 6, 6));
+        isoGame = isoGame.play(new Move(4, 4, 5, 5));
+        ArrayList<Move> moves = isoGame.legalMoves(5, 5);
         assertEquals(18, moves.size());
         assertTrue(containsMove(5, 7, moves));
         assertTrue(containsMove(5, 6, moves));
@@ -100,18 +97,16 @@ public class IsolationGameTest {
 
     @Test
     public void testBestMove() {
-        IsolationGame game = new IsolationGame();
-        game = game.play(new Move(0, 0, 0, 0));
-        game = game.play(new Move(0, 1, 0, 1));
-        game.board[1][0] = FieldState.BLOCKED;
-        Move move = game.bestMove();
+        IsolationGame isoGame = new IsolationGame();
+        isoGame = isoGame.play(new Move(0, 0, 0, 0));
+        isoGame = isoGame.play(new Move(0, 1, 0, 1));
+        isoGame.board[1][0] = FieldState.BLOCKED;
+        Move move = isoGame.bestMove();
         assertEquals(1, move.destX());
         assertEquals(1, move.destX());
     }
 
-    boolean containsMove(int x, int y, ArrayList<Move> moves) {
-        return moves.stream().anyMatch(move -> move.destX() == x && move.destY() == y);
+    boolean containsMove(int posX, int posY, ArrayList<Move> moves) {
+        return moves.stream().anyMatch(move -> move.destX() == posX && move.destY() == posY);
     }
-
-
 }
