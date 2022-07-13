@@ -36,6 +36,7 @@ public class IsolationGameUI extends PApplet {
     public void setup() {
         Images.imagePath(this);
         this.gameBoard = new GameBoard();
+        Images.soundFile.loop();
     }
 
     @Override

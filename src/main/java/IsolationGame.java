@@ -50,8 +50,8 @@ public class IsolationGame implements Isolation {
     @Override
     public Move bestMove() {
         assert greenCrab != null : "Green crabby must be set";
-        ArrayList<Move> legalMoves = legalMoves(greenCrab.posX(), greenCrab.posY());
-        if (legalMoves.size() > 0) {
+        ArrayList<Move> allLegalMoves = legalMoves(greenCrab.posX(), greenCrab.posY());
+        if (allLegalMoves.size() > 0) {
             ArrayList<Move> bestMoves = new ArrayList<>();
             int evaluateBestMove = Integer.MIN_VALUE;
             for (Move move : legalMoves) {
@@ -200,11 +200,8 @@ public class IsolationGame implements Isolation {
 
 interface Isolation {
     ArrayList<Move> legalMoves(int posX, int posY);
-
     Move bestMove();
-
     IsolationGame play(Move move);
-
     boolean isGameOver(int posX, int posY);
 }
 
