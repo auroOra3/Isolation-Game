@@ -54,7 +54,7 @@ public class IsolationGame implements Isolation {
         if (allLegalMoves.size() > 0) {
             ArrayList<Move> bestMoves = new ArrayList<>();
             int evaluateBestMove = Integer.MIN_VALUE;
-            for (Move move : legalMoves) {
+            for (Move move : allLegalMoves) {
                 int evaluate = play(move).alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
                 if (evaluateBestMove < evaluate) {
                     evaluateBestMove = evaluate;

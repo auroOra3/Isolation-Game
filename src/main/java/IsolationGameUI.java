@@ -2,19 +2,14 @@ package main.java;
 
 import processing.core.PApplet;
 
-import java.awt.*;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
 
 public class IsolationGameUI extends PApplet {
 
     GameState currentState = GameState.STARTSCREEN;
     private GameBoard gameBoard;
     private boolean redTurn = true;
-    private int currentFrame = 0;
+    private int currentInitFrame = 0;
+    private int currentPirateFrame = 0;
     private FieldState whoHasLost;
 
     public IsolationGameUI(boolean isDev) {
@@ -29,14 +24,14 @@ public class IsolationGameUI extends PApplet {
 
     @Override
     public void settings() {
-        size(540, 669);
+        size(540, 670);
     }
 
     @Override
     public void setup() {
         Images.imagePath(this);
         this.gameBoard = new GameBoard();
-        Images.soundFile.loop();
+        //Images.soundFile.loop();
     }
 
     @Override
@@ -51,10 +46,10 @@ public class IsolationGameUI extends PApplet {
 
     public void gameInitScreen() {
         frameRate(9.0f);
-        currentFrame = (currentFrame + 1) % Images.numOfFrames;
+        currentInitFrame = (currentInitFrame + 1) % Images.numOfFramesInitScreen;
         int offset = 0;
         for (int x = -100; x < width; x += Images.menuScreenBackground[0].width) {
-            background(Images.menuScreenBackground[(currentFrame + offset) % Images.numOfFrames]);
+            background(Images.menuScreenBackground[(currentInitFrame + offset) % Images.numOfFramesInitScreen]);
             offset += 2;
         }
         textFont(Images.beteFont);
@@ -116,19 +111,28 @@ public class IsolationGameUI extends PApplet {
     }
 
     public void gameOverScreen() {
-        background(Images.treasureIslandScreen);
+        background(Images.islandScreen);
+        image(Images.treasureMapNew, 10, height - 550, 200F * 2.6F, 166F * 2.8F);
+        frameRate(12.0f);
+        currentPirateFrame = (currentPirateFrame + 1) % Images.numOfFramesGameOverScreen;
+        int offset = 0;
+        for (int i = -100; i < width; i += Images.gameOverScreenPirate[0].width) {
+            image(Images.gameOverScreenPirate[(currentPirateFrame + offset) % Images.numOfFramesGameOverScreen], 40, 150);
+
+        }
         textFont(Images.beteFont);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
-        text("GAME OVER", width / 2, height - 550);
+        text("GAME OVER", width / 2, height - 600);
         textFont(Images.pirateFont);
         fill(0);
         textSize(30);
-        text("Congrats Me Matey",width / 2, height - 215);
-        image(whoHasLost == FieldState.GREEN ? Images.redCrab : Images.greenCrab, width/2-48, height-210, 90, 90);
-        textSize(30);
-        text("The Sweet Coffer is all Yours Arrrggghhh", width/2, height-105);
+        text("Congrats",width / 2 + 65, height - 470);
+        image(whoHasLost == FieldState.GREEN ? Images.redCrab : Images.greenCrab, width/2 + 22, height-439, 90, 90);
+        text("The Sweet Coffer\n" +
+                        "is all Yours\n" +
+                        "Arrrggghhh", width/2 -65, height-250);
         textFont(Images.beteFont);
         fill(0, 95, 177);
         textSize(25);
