@@ -2,6 +2,12 @@ package main.java;
 
 import processing.core.PApplet;
 
+import java.awt.*;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 
 public class IsolationGameUI extends PApplet {
 

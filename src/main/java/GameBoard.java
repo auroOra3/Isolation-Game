@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class GameBoard {
 
-    private Random random = new Random();
+    private final Random random = new Random();
     private Isolation isolationInterface = new IsolationGame();
     public Crab[][] gameBoard;
     private Crab redCrab, greenCrab;

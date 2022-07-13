@@ -5,9 +5,9 @@ import java.util.Random;
 
 public class IsolationGame implements Isolation {
 
-    private FieldState[][] board = new FieldState[8][8];
-    private Location redCrab = null;
-    private Location greenCrab = null;
+    FieldState[][] board = new FieldState[8][8];
+    Location redCrab = null;
+    Location greenCrab = null;
     private static Random random = new Random();
 
     public IsolationGame() {
