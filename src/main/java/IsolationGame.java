@@ -49,13 +49,13 @@ public class IsolationGame implements Isolation {
 
     @Override
     public Move bestMove() {
-        assert greenCrab != null : "Green crabby must be set.";
-        ArrayList<Move> legalMoves = legalMoves(greenCrab.x(), greenCrab.y());
+        assert greenCrab != null : "Green crabby must be set";
+        ArrayList<Move> legalMoves = legalMoves(greenCrab.posX(), greenCrab.posY());
         if (legalMoves.size() > 0) {
             ArrayList<Move> bestMoves = new ArrayList<>();
             int evaluateBestMove = Integer.MAX_VALUE;
             for (Move move : legalMoves) {
-                int evaluate = miniMaxAlphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                int evaluate = miniMaxAlphaBeta(3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
                 if (evaluateBestMove > evaluate) {
                     evaluateBestMove = evaluate;
                     bestMoves.clear();
@@ -72,7 +72,7 @@ public class IsolationGame implements Isolation {
 
     private int evaluate() {
         assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
-        return legalMoves(redCrab.x(), redCrab.y()).size() - legalMoves(greenCrab.x(), greenCrab.y()).size();
+        return legalMoves(redCrab.posX(), redCrab.posY()).size() - legalMoves(greenCrab.posX(), greenCrab.posY()).size();
     }
 
     private int miniMaxAlphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
@@ -80,17 +80,18 @@ public class IsolationGame implements Isolation {
         if (depth == 0) {
             Move move = monteCarloAlgorithm(maxCrab);
             if (move == null) {
-                return maxCrab ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+                if (maxCrab) return Integer.MIN_VALUE;
+                return Integer.MAX_VALUE;
             }
             return play(move).evaluate();
         }
-        if (isGameOver(redCrab.x(), redCrab.y()) || isGameOver(greenCrab.x(), greenCrab.y())) {
+        if (isGameOver(redCrab.posX(), redCrab.posY()) || isGameOver(greenCrab.posX(), greenCrab.posY())) {
             return evaluate();
         }
 
         if (maxCrab) {
             int evaluateMaxValue = Integer.MIN_VALUE;
-            for (Move move : legalMoves(redCrab.x(), redCrab.y())) {
+            for (Move move : legalMoves(redCrab.posX(), redCrab.posY())) {
                 int evaluate = play(move).miniMaxAlphaBeta(depth - 1, alpha, beta, false);
                 evaluateMaxValue = Math.max(evaluateMaxValue, evaluate);
                 alpha = Math.max(alpha, evaluate);
@@ -102,7 +103,7 @@ public class IsolationGame implements Isolation {
         }
 
         int evaluateMinValue = Integer.MAX_VALUE;
-        for (Move move : legalMoves(greenCrab.x(), greenCrab.y())) {
+        for (Move move : legalMoves(greenCrab.posX(), greenCrab.posY())) {
             int eval = play(move).miniMaxAlphaBeta(depth - 1, alpha, beta, true);
             evaluateMinValue = Math.min(evaluateMinValue, eval);
             alpha = Math.min(alpha, eval);
@@ -116,9 +117,9 @@ public class IsolationGame implements Isolation {
     private Move monteCarloAlgorithm(boolean maxCrab) {
         ArrayList<Move> allLegalMoves;
         if (maxCrab) {
-            allLegalMoves = legalMoves(redCrab.x(), redCrab.y());
+            allLegalMoves = legalMoves(redCrab.posX(), redCrab.posY());
         } else {
-            allLegalMoves = legalMoves(greenCrab.x(), greenCrab.y());
+            allLegalMoves = legalMoves(greenCrab.posX(), greenCrab.posY());
         }
 
         if (allLegalMoves.isEmpty()) {
@@ -127,7 +128,11 @@ public class IsolationGame implements Isolation {
         }
 
         Move bestMove = null;
-        int bestMoveWins = maxCrab ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int bestMoveWinning;
+
+        if (maxCrab) bestMoveWinning = Integer.MIN_VALUE;
+        else bestMoveWinning = Integer.MAX_VALUE;
+
         IsolationGame isoGame;
         boolean randomGameTurn;
         for (Move move : allLegalMoves) {
@@ -135,14 +140,14 @@ public class IsolationGame implements Isolation {
             for (int i = 0; i < 5; i++) {
                 randomGameTurn = maxCrab;
                 isoGame = this.play(move);
-                while (!isoGame.isGameOver(isoGame.redCrab.x(), isoGame.redCrab.y()) && !isoGame.isGameOver(isoGame.greenCrab.x(), isoGame.greenCrab.y())) {
-                    ArrayList<Move> randomLegalMoves = randomGameTurn ? isoGame.legalMoves(isoGame.redCrab.x(), isoGame.redCrab.y()) : isoGame.legalMoves(isoGame.greenCrab.x(), isoGame.greenCrab.y());
+                while (!isoGame.isGameOver(isoGame.redCrab.posX(), isoGame.redCrab.posY()) && !isoGame.isGameOver(isoGame.greenCrab.posX(), isoGame.greenCrab.posY())) {
+                    ArrayList<Move> randomLegalMoves = randomGameTurn ? isoGame.legalMoves(isoGame.redCrab.posX(), isoGame.redCrab.posY()) : isoGame.legalMoves(isoGame.greenCrab.posX(), isoGame.greenCrab.posY());
                     Move rmdMove = randomLegalMoves.get(random.nextInt(randomLegalMoves.size()));
                     isoGame = isoGame.play(rmdMove);
                     randomGameTurn = !randomGameTurn;
 
                 }
-                if (isoGame.isGameOver(redCrab.x(), redCrab.y())) {
+                if (isoGame.isGameOver(redCrab.posX(), redCrab.posY())) {
                     wins++;
                 } else {
                     wins--;
@@ -150,21 +155,21 @@ public class IsolationGame implements Isolation {
             }
 
             if (maxCrab) {
-                if (bestMoveWins < wins) {
+                if (bestMoveWinning < wins) {
                     bestMove = move;
-                    bestMoveWins = wins;
+                    bestMoveWinning = wins;
                 }
             } else {
-                if (bestMoveWins > wins) {
+                if (bestMoveWinning > wins) {
                     bestMove = move;
-                    bestMoveWins = wins;
+                    bestMoveWinning = wins;
                 }
             }
             //System.out.println("Calculated total wins: " + wins);
         }
         assert bestMove != null;
-        System.out.printf("Calculated best Move (%d/%d) to (%d/%d) - wins: %d%n", bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY(), bestMoveWins);
-        System.out.println("Calculated best Move wins: " + bestMoveWins);
+        System.out.printf("Calculated best Move (%d/%d) to (%d/%d) - wins: %d%n", bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY(), bestMoveWinning);
+        System.out.println("Calculated best Move wins: " + bestMoveWinning);
         return bestMove;
     }
 
@@ -210,7 +215,7 @@ interface Isolation {
     boolean isGameOver(int posX, int posY);
 }
 
-record Location(int x, int y) {
+record Location(int posX, int posY) {
 }
 
 record Move(int sourceX, int sourceY, int destX, int destY) {
