@@ -178,7 +178,7 @@ public class IsolationGame implements Isolation {
     @Override
     public IsolationGame play(Move move) {
         IsolationGame isolationGame = new IsolationGame(this);
-        assert legalMoves(move.sourceX(), move.sourceY()).stream().anyMatch(allowedMove -> allowedMove.destX() == move.destY() && allowedMove.destY() == move.destY()): "Move must be an allowed move";
+        assert redCrab == null && greenCrab == null || legalMoves(move.sourceX(), move.sourceY()).stream().anyMatch(allowedMove -> allowedMove.destX() == move.destX() && allowedMove.destY() == move.destY()) : "Move must be an allowed move";
         if (move.isLegalMove(isolationGame.board)) {
             if (move.sourceX() == move.destX() && move.sourceY() == move.destY()) {
                 if (isolationGame.redCrab == null) {

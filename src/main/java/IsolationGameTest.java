@@ -1,9 +1,11 @@
 package main.java;
 
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IsolationGameTest {
@@ -96,14 +98,20 @@ public class IsolationGameTest {
     }
 
     @Test
-    public void testBestMove() {
-        IsolationGame isoGame = new IsolationGame();
-        isoGame = isoGame.play(new Move(0, 0, 0, 0));
-        isoGame = isoGame.play(new Move(0, 1, 0, 1));
-        isoGame.board[1][0] = GameBoardState.BLOCKED;
-        Move move = isoGame.bestMove();
-        assertEquals(1, move.destX());
-        assertEquals(1, move.destX());
+    public void testInvalidPlay() {
+        assertThrows(AssertionError.class, () -> {
+            new IsolationGame().play(new Move(4, 4, 0, 4));
+        });
+    }
+
+    @Test
+    public void testInvalidPlayWithValidPlayer() {
+        assertThrows(AssertionError.class, () -> {
+            IsolationGame game = new IsolationGame();
+            game = game.play(new Move(4, 4, 4, 4));
+            game = game.play(new Move(6, 6, 6, 6));
+            game.play(new Move(4, 4, 1, 4));
+        });
     }
 
     @Test
