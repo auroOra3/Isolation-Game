@@ -114,13 +114,6 @@ public class IsolationGameTest {
         });
     }
 
-    @Test
-    public void testIllegalMove() {
-        IsolationGame isoGame = new IsolationGame();
-
-
-    }
-
     boolean containsMove(int posX, int posY, ArrayList<Move> moves) {
         return moves.stream().anyMatch(move -> move.destX() == posX && move.destY() == posY);
     }
