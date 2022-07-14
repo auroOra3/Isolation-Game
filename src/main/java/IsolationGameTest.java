@@ -85,11 +85,11 @@ public class IsolationGameTest {
         assertTrue(Arrays.stream(emptyGame.board).allMatch(fieldStates -> Arrays.stream(fieldStates).allMatch(Objects::isNull)));
         assertNull(emptyGame.redCrab);
         assertNull(emptyGame.greenCrab);
-        assertEquals(FieldState.RED, redCrabSetGame.board[4][4]);
-        assertTrue(Arrays.stream(redCrabSetGame.board).allMatch(fieldStates -> Arrays.stream(fieldStates).allMatch(fieldState -> fieldState != FieldState.BLOCKED)));
+        assertEquals(GameBoardState.RED, redCrabSetGame.board[4][4]);
+        assertTrue(Arrays.stream(redCrabSetGame.board).allMatch(fieldStates -> Arrays.stream(fieldStates).allMatch(fieldState -> fieldState != GameBoardState.BLOCKED)));
         assertNotNull(redCrabSetGame.redCrab);
         assertNull(redCrabSetGame.greenCrab);
-        assertTrue(Arrays.stream(redCrabMovedGame.board).anyMatch(fieldStates -> Arrays.stream(fieldStates).anyMatch(fieldState -> fieldState == FieldState.BLOCKED)));
+        assertTrue(Arrays.stream(redCrabMovedGame.board).anyMatch(fieldStates -> Arrays.stream(fieldStates).anyMatch(fieldState -> fieldState == GameBoardState.BLOCKED)));
         assertNotNull(redCrabMovedGame.redCrab);
         assertNull(redCrabMovedGame.greenCrab);
         assertNotNull(redCrabMovedGame.play(new Move(2, 2, 2, 2)).greenCrab);
@@ -100,10 +100,17 @@ public class IsolationGameTest {
         IsolationGame isoGame = new IsolationGame();
         isoGame = isoGame.play(new Move(0, 0, 0, 0));
         isoGame = isoGame.play(new Move(0, 1, 0, 1));
-        isoGame.board[1][0] = FieldState.BLOCKED;
+        isoGame.board[1][0] = GameBoardState.BLOCKED;
         Move move = isoGame.bestMove();
         assertEquals(1, move.destX());
         assertEquals(1, move.destX());
+    }
+
+    @Test
+    public void testIllegalMove() {
+        IsolationGame isoGame = new IsolationGame();
+
+
     }
 
     boolean containsMove(int posX, int posY, ArrayList<Move> moves) {

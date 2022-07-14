@@ -1,7 +1,6 @@
-package main.java;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -60,7 +59,7 @@ public class IsolationGame implements Isolation {
             calculatedBestMove = Integer.MIN_VALUE;
             for (Move move : legalMoves) {
                 logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
-                int calculate = play(move).negaMaxAlphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                int calculate = play(move).alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
                 logicLog.info("The calculation returns (%d)".formatted(calculate));
                 if (calculatedBestMove < calculate) {
                     calculatedBestMove = calculate;
@@ -83,9 +82,9 @@ public class IsolationGame implements Isolation {
         }
     }
 
-    private int negaMaxAlphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
+    private int alphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
         assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
-        logicLog.info("If maxCrab true, alphaBeta will try maximizing red player´s advantage :" + maxCrab);
+        logicLog.info("If maximizing crab true, alphaBeta will try minimizing green player´s advantage :" + maxCrab);
         if (depth == 0) {
             Move move = monteCarloAlgorithm(maxCrab);
             if (move == null) {
@@ -101,7 +100,7 @@ public class IsolationGame implements Isolation {
             int calculatedMaxValue = Integer.MIN_VALUE;
             for (Move move : legalMoves(redCrab.posX(), redCrab.posY())) {
                 logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
-                int calculate = play(move).negaMaxAlphaBeta(depth - 1, alpha, beta, false);
+                int calculate = play(move).alphaBeta(depth - 1, alpha, beta, false);
                 logicLog.info("The calculation returns (%d)".formatted(calculate));
                 calculatedMaxValue = Math.max(calculatedMaxValue, calculate);
                 alpha = Math.max(alpha, calculate);
@@ -116,7 +115,7 @@ public class IsolationGame implements Isolation {
         int calculatedMaxValue = Integer.MIN_VALUE;
         for (Move move : legalMoves(greenCrab.posX(), greenCrab.posY())) {
             logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
-            int calculate = play(move).negaMaxAlphaBeta(depth - 1, alpha, beta, true);
+            int calculate = play(move).alphaBeta(depth - 1, alpha, beta, true);
             logicLog.info("The calculation returns (%d)".formatted(calculate));
             calculatedMaxValue = Math.max(calculatedMaxValue, calculate);
             alpha = Math.max(alpha, calculate);
@@ -153,10 +152,9 @@ public class IsolationGame implements Isolation {
                 decideWhichTurn = maxCrab;
                 isoGame = this.play(move);
                 while (!isoGame.isGameOver(isoGame.redCrab.posX(), isoGame.redCrab.posY()) && !isoGame.isGameOver(isoGame.greenCrab.posX(), isoGame.greenCrab.posY())) {
-                    ArrayList<Move> randomLegalMoves = decideWhichTurn ?
-                            isoGame.legalMoves(isoGame.redCrab.posX(), isoGame.redCrab.posY()) : isoGame.legalMoves(isoGame.greenCrab.posX(), isoGame.greenCrab.posY());
-                    Move randomMove = randomLegalMoves.get(random.nextInt(randomLegalMoves.size()));
-                    isoGame = isoGame.play(randomMove);
+                    ArrayList<Move> randomLegalMoves = decideWhichTurn ? isoGame.legalMoves(isoGame.redCrab.posX(), isoGame.redCrab.posY()) : isoGame.legalMoves(isoGame.greenCrab.posX(), isoGame.greenCrab.posY());
+                    Move rmdMove = randomLegalMoves.get(random.nextInt(randomLegalMoves.size()));
+                    isoGame = isoGame.play(rmdMove);
                     decideWhichTurn = !decideWhichTurn;
                 }
                 if (isoGame.isGameOver(redCrab.posX(), redCrab.posY())) {
@@ -213,8 +211,8 @@ public class IsolationGame implements Isolation {
         StringBuilder stringBuilder = new StringBuilder("-  -  -  -  -  -  -  -\n");
 
         for (int x = 0; x < board.length; x++) {
-            for (GameBoardState[] gameBoardStates : board) {
-                GameBoardState state = gameBoardStates[x];
+            for (int y = 0; y < board.length; y++) {
+                GameBoardState state = board[y][x];
                 stringBuilder.append("|");
                 if (state == null) {
                     stringBuilder.append(" ");

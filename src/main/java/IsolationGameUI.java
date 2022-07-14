@@ -12,7 +12,7 @@ public class IsolationGameUI extends PApplet {
     private boolean redTurn = true;
     private int currentInitFrame = 0;
     private int currentPirateFrame = 0;
-    private FieldState whoHasLost;
+    private GameBoardState whoHasLost;
     private static Logger UILog = LogManager.getLogger(IsolationGameUI.class);
 
     public IsolationGameUI(boolean isDev) {
@@ -120,7 +120,7 @@ public class IsolationGameUI extends PApplet {
         currentPirateFrame = (currentPirateFrame + 1) % Images.numOfFramesGameOverScreen;
         int offset = 0;
         for (int i = -100; i < width; i += Images.gameOverScreenPirate[0].width) {
-            image(Images.gameOverScreenPirate[(currentPirateFrame + offset) % Images.numOfFramesGameOverScreen], 40, 150);
+            image(Images.gameOverScreenPirate[(currentPirateFrame + offset) % Images.numOfFramesGameOverScreen], 70, 180);
 
         }
         textFont(Images.beteFont);
@@ -132,7 +132,7 @@ public class IsolationGameUI extends PApplet {
         fill(0);
         textSize(30);
         text("Congrats",width / 2 + 65, height - 470);
-        image(whoHasLost == FieldState.GREEN ? Images.redCrab : Images.greenCrab, width/2 + 22, height-439, 90, 90);
+        image(whoHasLost == GameBoardState.GREEN ? Images.redCrab : Images.greenCrab, width/2 + 22, height-439, 90, 90);
         text("The Sweet Coffer\n" +
                         "is all Yours\n" +
                         "Arrrggghhh", width/2 -65, height-250);
@@ -183,8 +183,8 @@ public class IsolationGameUI extends PApplet {
 
                 whoHasLost = gameBoard.whoLost();
                 if (whoHasLost != null) {
-                    UILog.info("(%s) crabby lost the game.".formatted(whoHasLost));
-                    if (whoHasLost == FieldState.GREEN || whoHasLost == FieldState.RED) {
+                    UILog.info(whoHasLost + " crabby lost the game");
+                    if (whoHasLost == GameBoardState.GREEN || whoHasLost == GameBoardState.RED) {
                         startGameOverScreen();
                     }
                 }

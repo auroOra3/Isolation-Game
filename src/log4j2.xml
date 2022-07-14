@@ -9,6 +9,9 @@
         </File>
     </Appenders>
     <Loggers>
+        <Logger name="Log4j" level="INFO" additivity="false" >
+            <AppenderRef ref="console" />
+        </Logger>
         <Root level="INFO">
             <AppenderRef ref="Console" />
             <AppenderRef ref="MyFile"/>

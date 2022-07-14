@@ -5,18 +5,18 @@ import processing.core.PImage;
 
 public class Crab {
     private int crabPosX, crabPosY;
-    public FieldState playerStatus;
+    public GameBoardState playerStatus;
     private PImage img;
 
-    public Crab(FieldState playerStatus, int posX, int posY) {
+    public Crab(GameBoardState playerStatus, int posX, int posY) {
         this.playerStatus = playerStatus;
         this.crabPosX = posX;
         this.crabPosY = posY;
-        if (this.playerStatus == FieldState.GREEN) {
+        if (this.playerStatus == GameBoardState.GREEN) {
             img = Images.greenCrab;
-        } else if (this.playerStatus == FieldState.RED) {
+        } else if (this.playerStatus == GameBoardState.RED) {
             img = Images.redCrab;
-        } else if (this.playerStatus == FieldState.BLOCKED) {
+        } else if (this.playerStatus == GameBoardState.BLOCKED) {
             img = Images.blockedField;
         }
     }
@@ -33,7 +33,7 @@ public class Crab {
         return crabPosY;
     }
 
-    public FieldState getPlayerStatus() {
+    public GameBoardState getPlayerStatus() {
         return playerStatus;
     }
 
