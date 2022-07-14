@@ -129,7 +129,6 @@ public class IsolationGame implements Isolation {
     }
 
     private Move monteCarloAlgorithm(boolean maxCrab) {
-        logicLog.info("If maxCrab true, it´s red crabby´s turn: " + maxCrab);
         ArrayList<Move> allLegalMoves;
         Move bestMove = null;
         IsolationGame isoGame;
@@ -241,7 +240,7 @@ public class IsolationGame implements Isolation {
 interface Isolation {
     ArrayList<Move> legalMoves(int posX, int posY);
     Move bestMove();
-    IsolationGame play(Move move);
+    Isolation play(Move move);
     boolean isGameOver(int posX, int posY);
 }
 

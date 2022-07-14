@@ -48,7 +48,7 @@ public class IsolationGameTest {
         isoGame = isoGame.play(new Move(6, 6, 6, 6));
         isoGame = isoGame.play(new Move(4, 4, 5, 5));
         ArrayList<Move> moves = isoGame.legalMoves(5, 5);
-        assertEquals(18, moves.size());
+        assertEquals(18, moves.size(), "Die Anzahl der legalen Züge soll 18 sein");
         assertTrue(containsMove(5, 7, moves));
         assertTrue(containsMove(5, 6, moves));
         assertTrue(containsMove(5, 4, moves));

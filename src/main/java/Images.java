@@ -21,7 +21,8 @@ public class Images {
     public static int numOfFramesInitScreen = 92;
     public static int numOfFramesGameOverScreen = 21;
     public static SoundFile soundFile;
-
+    public static PImage speechBubble;
+    public static PImage speechBubble2;
 
     public static String redCrabPath = "./resources/redCrab.png";
     public static String whiteCrabPath = "./resources/greenCrab.png";
@@ -33,6 +34,8 @@ public class Images {
     public static String treasureMapNewPath = "./resources/treasureMapCool.png";
     public static String blockedFieldPath = "./resources/blocked.png";
     public static String soundFilePath = "/resources/seashore_sound.wav";
+    public static String speechBubblePath = "/resources/speech.png";
+    public static String speechBubblePath2 = "/resources/speech2.png";
 
     public static void imagePath(PApplet canvas) {
         soundFile = new SoundFile(canvas, soundFilePath);
@@ -43,6 +46,10 @@ public class Images {
             String initScreen = "frame_" + PApplet.nf(i, 2) + "_delay-0.12s.png";
             menuScreenBackground[i] = canvas.loadImage("./resources/" + initScreen);
         }
+        speechBubble = canvas.loadImage(speechBubblePath);
+        speechBubble.resize(175, 175);
+        speechBubble2 = canvas.loadImage(speechBubblePath2);
+        speechBubble2.resize(175, 175);
         beteFont = canvas.createFont(betePath, 128);
         pirateFont = canvas.createFont(pirateFontPath, 128);
         islandScreen = canvas.loadImage(islandScreenPath);
