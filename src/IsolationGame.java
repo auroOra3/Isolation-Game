@@ -1,17 +1,43 @@
-package main.java;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class IsolationGame implements Isolation {
+interface Isolation {
+    ArrayList<Move> legalMoves(int posX, int posY);
+    Move bestMove();
+    Isolation play(Move move);
+    boolean isGameOver(int posX, int posY);
+
+}
+
+record Move(int sourceX, int sourceY, int destX, int destY) {
+    public boolean isLegalMove(GameBoardState[][] board) {
+        if (sourceX < 0 || sourceX >= board.length || sourceY < 0 || sourceY >= board.length || destX < 0 || destX >= board.length || destY < 0 || destY >= board.length)
+            return false;
+        GameBoardState playerPos = board[sourceX][sourceY];
+        GameBoardState destination = board[destX][destY];
+        assert playerPos != null || playerPos != GameBoardState.BLOCKED;
+        return destination == null;
+    }
+
+}
+
+record Location(int posX, int posY) {
+}
+
+enum GameBoardState {
+    RED,
+    GREEN,
+    BLOCKED;
+}
+
+
+class IsolationGame implements Isolation {
 
     GameBoardState[][] board = new GameBoardState[8][8];
     Location redCrab = null;
     Location greenCrab = null;
     private static Random random = new Random();
-    private static Logger logicLog = LogManager.getLogger(IsolationGame.class);
+    //private static Logger logicLog = LogManager.getLogger(IsolationGame.class);
 
     public IsolationGame() {
     }
@@ -59,16 +85,16 @@ public class IsolationGame implements Isolation {
         if (legalMoves.size() > 0) {
             calculatedBestMove = Integer.MIN_VALUE;
             for (Move move : legalMoves) {
-                logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
+                //logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
                 int calculate = play(move).negaMaxAlphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
-                logicLog.info("The calculation returns (%d)".formatted(calculate));
+                //logicLog.info("The calculation returns (%d)".formatted(calculate));
                 if (calculatedBestMove < calculate) {
                     calculatedBestMove = calculate;
                     bestMove = move;
                 }
             }
             assert bestMove != null : "Every crabby must have at least one move";
-            logicLog.info("The randomized best move from (%d/%d) to (%d/%d).".formatted(bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY()));
+            //logicLog.info("The randomized best move from (%d/%d) to (%d/%d).".formatted(bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY()));
             return bestMove;
         }
         return null;
@@ -85,7 +111,7 @@ public class IsolationGame implements Isolation {
 
     private int negaMaxAlphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
         assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
-        logicLog.info("If maxCrab true, alphaBeta will try maximizing red player´s advantage :" + maxCrab);
+        //logicLog.info("If maxCrab true, alphaBeta will try maximizing red player´s advantage :" + maxCrab);
         if (depth == 0) {
             Move move = monteCarloAlgorithm(maxCrab);
             if (move == null) {
@@ -100,35 +126,36 @@ public class IsolationGame implements Isolation {
         if (maxCrab) {
             int calculatedMaxValue = Integer.MIN_VALUE;
             for (Move move : legalMoves(redCrab.posX(), redCrab.posY())) {
-                logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
+                //logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
                 int calculate = play(move).negaMaxAlphaBeta(depth - 1, alpha, beta, false);
-                logicLog.info("The calculation returns (%d)".formatted(calculate));
+                //logicLog.info("The calculation returns (%d)".formatted(calculate));
                 calculatedMaxValue = Math.max(calculatedMaxValue, calculate);
                 alpha = Math.max(alpha, calculate);
                 if (beta <= alpha) {
                     break;
                 }
             }
-            logicLog.info("Calculated max value (%d) will be returned".formatted(calculatedMaxValue));
+            //logicLog.info("Calculated max value (%d) will be returned".formatted(calculatedMaxValue));
             return calculatedMaxValue;
         }
 
         int calculatedMaxValue = Integer.MIN_VALUE;
         for (Move move : legalMoves(greenCrab.posX(), greenCrab.posY())) {
-            logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
+            //logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
             int calculate = play(move).negaMaxAlphaBeta(depth - 1, alpha, beta, true);
-            logicLog.info("The calculation returns (%d)".formatted(calculate));
+            //logicLog.info("The calculation returns (%d)".formatted(calculate));
             calculatedMaxValue = Math.max(calculatedMaxValue, calculate);
             alpha = Math.max(alpha, calculate);
             if (beta <= alpha) {
                 break;
             }
         }
-        logicLog.info("Calculated max value (%d) will be returned".formatted(calculatedMaxValue));
+        //logicLog.info("Calculated max value (%d) will be returned".formatted(calculatedMaxValue));
         return calculatedMaxValue;
     }
 
     private Move monteCarloAlgorithm(boolean maxCrab) {
+        //logicLog.info("If maxCrab true, it´s red crabby´s turn: " + maxCrab);
         ArrayList<Move> allLegalMoves;
         Move bestMove = null;
         IsolationGame isoGame;
@@ -140,7 +167,7 @@ public class IsolationGame implements Isolation {
         }
 
         if (allLegalMoves.isEmpty()) {
-            logicLog.info("Cancel monte carlo: no legal moves available");
+            //logicLog.info("Cancel monte carlo: no legal moves available");
             return null;
         }
 
@@ -170,15 +197,15 @@ public class IsolationGame implements Isolation {
             }
         }
         assert bestMove != null;
-        logicLog.info("Calculated best move from (%d/%d) to (%d/%d) - wins: %d".formatted(bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY(), countWinsForBestMove));
-        logicLog.info("Calculated wins for best move: " + countWinsForBestMove);
+        //logicLog.info("Calculated best move from (%d/%d) to (%d/%d) - wins: %d".formatted(bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY(), countWinsForBestMove));
+        //logicLog.info("Calculated wins for best move: " + countWinsForBestMove);
         return bestMove;
     }
 
     @Override
     public IsolationGame play(Move move) {
         IsolationGame isolationGame = new IsolationGame(this);
-        assert redCrab == null && greenCrab == null || legalMoves(move.sourceX(), move.sourceY()).stream().anyMatch(allowedMove -> allowedMove.destX() == move.destX() && allowedMove.destY() == move.destY()) : "Move must be an allowed move";
+        assert legalMoves(move.sourceX(), move.sourceY()).stream().anyMatch(allowedMove -> allowedMove.destX() == move.destY() && allowedMove.destY() == move.destY()): "Move must be an allowed move";
         if (move.isLegalMove(isolationGame.board)) {
             if (move.sourceX() == move.destX() && move.sourceY() == move.destY()) {
                 if (isolationGame.redCrab == null) {
@@ -209,57 +236,27 @@ public class IsolationGame implements Isolation {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("-  -  -  -  -  -  -  -\n");
-
-        for (int x = 0; x < board.length; x++) {
-            for (GameBoardState[] gameBoardStates : board) {
-                GameBoardState state = gameBoardStates[x];
-                stringBuilder.append("|");
-                if (state == null) {
-                    stringBuilder.append(" ");
+        StringBuilder stringBuilder = new StringBuilder("Isolation Game\n");
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                GameBoardState gameBoardTile = board[y][x];
+                if (gameBoardTile == null) {
+                    stringBuilder.append(" - ");
                 } else {
-                    if (state == GameBoardState.GREEN) {
+                    if (gameBoardTile == GameBoardState.GREEN) {
                         stringBuilder.append("x");
                     }
-                    if (state == GameBoardState.RED) {
+                    if (gameBoardTile == GameBoardState.RED) {
                         stringBuilder.append("o");
                     }
-                    if (state == GameBoardState.BLOCKED) {
+                    if (gameBoardTile == GameBoardState.BLOCKED) {
                         stringBuilder.append("#");
                     }
                 }
-                stringBuilder.append("|");
             }
             stringBuilder.append("\n");
         }
-        stringBuilder.append(" -  -  -  -  -  -  -  -\n");
         return stringBuilder.toString();
     }
 }
 
-interface Isolation {
-    ArrayList<Move> legalMoves(int posX, int posY);
-    Move bestMove();
-    Isolation play(Move move);
-    boolean isGameOver(int posX, int posY);
-}
-
-record Location(int posX, int posY) {
-}
-
-record Move(int sourceX, int sourceY, int destX, int destY) {
-    public boolean isLegalMove(GameBoardState[][] board) {
-        if (sourceX < 0 || sourceX >= board.length || sourceY < 0 || sourceY >= board.length || destX < 0 || destX >= board.length || destY < 0 || destY >= board.length)
-            return false;
-        GameBoardState playerPos = board[sourceX][sourceY];
-        GameBoardState destination = board[destX][destY];
-        assert playerPos != null || playerPos != GameBoardState.BLOCKED;
-        return destination == null;
-    }
-}
-
-enum GameBoardState {
-    RED,
-    GREEN,
-    BLOCKED;
-}

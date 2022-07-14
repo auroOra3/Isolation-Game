@@ -1,5 +1,7 @@
 package main.java;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import processing.core.PApplet;
 
 
@@ -10,7 +12,8 @@ public class IsolationGameUI extends PApplet {
     private boolean redTurn = true;
     private int currentInitFrame = 0;
     private int currentPirateFrame = 0;
-    private FieldState whoHasLost;
+    private GameBoardState whoHasLost;
+    private static Logger UILog = LogManager.getLogger(IsolationGameUI.class);
 
     public IsolationGameUI(boolean isDev) {
         if (isDev)
@@ -30,8 +33,8 @@ public class IsolationGameUI extends PApplet {
     @Override
     public void setup() {
         Images.imagePath(this);
+        Images.soundFile.loop();
         this.gameBoard = new GameBoard();
-        //Images.soundFile.loop();
     }
 
     @Override
@@ -56,12 +59,12 @@ public class IsolationGameUI extends PApplet {
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
-        text("Don´t get stranded", width / 2, height - 550);
+        text("Don´t get stranded", width/2, height - 550);
         fill(0, 95, 177);
         textSize(25);
-        text("Click to Start", width / 2, height - 60);
+        text("Click to Start", width/2, height - 60);
         textSize(15);
-        text("Game Instructions", width / 2, height - 30);
+        text("Game Instructions", width/2, height - 30);
     }
 
     public void gameInstructionScreen() {
@@ -71,7 +74,7 @@ public class IsolationGameUI extends PApplet {
         textAlign(CENTER);
         fill(103, 40, 5);
         textSize(25);
-        text("Game Instruction", width / 2, height - 460);
+        text("Game Instruction", width/2, height - 460);
         textSize(18);
         text("The first player chooses a cell to start\n" +
                 "Each player takes turns\nmoving their player to a new cell\n" +
@@ -81,12 +84,12 @@ public class IsolationGameUI extends PApplet {
                 "or by the other player\n" +
                 "If a player is unable to make any further move\n" +
                 "the opponent wins\n" +
-                "Thus the goal of the main.game is\n" +
-                "to be the last player with a remaining move available", width / 2, height - 420);
+                "Thus the goal of the maingame is\n" +
+                "to be the last player with a remaining move available", width/2, height - 420);
         textFont(Images.beteFont);
         fill(0, 95, 177);
         textSize(25);
-        text("Go Back", width / 2, height - 40);
+        text("Go Back", width/2, height - 40);
 
     }
 
@@ -113,42 +116,43 @@ public class IsolationGameUI extends PApplet {
     public void gameOverScreen() {
         background(Images.islandScreen);
         image(Images.treasureMapNew, 10, height - 550, 200F * 2.6F, 166F * 2.8F);
+        image(Images.speechBubble, 270, 155 );
+        image(Images.speechBubble2, 90, 365);
         frameRate(12.0f);
         currentPirateFrame = (currentPirateFrame + 1) % Images.numOfFramesGameOverScreen;
         int offset = 0;
         for (int i = -100; i < width; i += Images.gameOverScreenPirate[0].width) {
-            image(Images.gameOverScreenPirate[(currentPirateFrame + offset) % Images.numOfFramesGameOverScreen], 40, 150);
-
+            image(Images.gameOverScreenPirate[(currentPirateFrame + offset) % Images.numOfFramesGameOverScreen], 70, 190);
         }
         textFont(Images.beteFont);
         textAlign(CENTER);
         fill(252, 241, 201);
         textSize(40);
-        text("GAME OVER", width / 2, height - 600);
+        text("GAME OVER", width/2, height - 600);
         textFont(Images.pirateFont);
-        fill(0);
+        fill(103, 40, 5);
         textSize(30);
-        text("Congrats",width / 2 + 65, height - 470);
-        image(whoHasLost == FieldState.GREEN ? Images.redCrab : Images.greenCrab, width/2 + 22, height-439, 90, 90);
+        text("Congrats",353, 200);
+        image(whoHasLost == GameBoardState.GREEN ? Images.redCrab : Images.greenCrab, 312, 200, 90, 90);
+        textSize(20);
         text("The Sweet Coffer\n" +
                         "is all Yours\n" +
-                        "Arrrggghhh", width/2 -65, height-250);
+                        "Arrrggghhh", 175, 430);
         textFont(Images.beteFont);
         fill(0, 95, 177);
         textSize(25);
-        text("Play Again", width / 2, height - 40);
+        text("Play Again", width/2, height - 40);
     }
 
     @Override
     public void mousePressed() {
-        System.out.println(mouseX);
-        System.out.println(mouseY);
-
         switch (currentState) {
             case STARTSCREEN -> {
                 if (mouseX > 152 && mouseX < 389 && mouseY > 578 && mouseY < 616) {
+                    UILog.info("User startes playing Isolation Game");
                     startGameScreen();
                 } else if (mouseX > 189 && mouseX < 354 && mouseY > 626 && mouseY < 642) {
+                    UILog.info("User clicked on Game Instruction");
                     startInstructionScreen();
                 }
             }
@@ -161,7 +165,9 @@ public class IsolationGameUI extends PApplet {
                 int posX = (mouseX - 90) / 45;
                 int posY = (mouseY - 171) / 45;
 
+                UILog.info("Player clicked at (%d/%d)".formatted(posX, posY));
                 if (redTurn) {
+                    UILog.info("It´s red crabby´s turn.");
                     boolean isValidMove = gameBoard.executeMove(true, posX, posY);
                     if (isValidMove) {
                         redTurn = !redTurn;
@@ -169,6 +175,7 @@ public class IsolationGameUI extends PApplet {
                 }
 
                 if (!redTurn) {
+                    UILog.info("It´s green crabby´s turn.");
                     boolean isValidMove = gameBoard.executeBotMove();
                     if (isValidMove) {
                         redTurn = !redTurn;
@@ -177,7 +184,8 @@ public class IsolationGameUI extends PApplet {
 
                 whoHasLost = gameBoard.whoLost();
                 if (whoHasLost != null) {
-                    if (whoHasLost == FieldState.GREEN || whoHasLost == FieldState.RED) {
+                    UILog.info(whoHasLost + " crabby lost the game");
+                    if (whoHasLost == GameBoardState.GREEN || whoHasLost == GameBoardState.RED) {
                         startGameOverScreen();
                     }
                 }

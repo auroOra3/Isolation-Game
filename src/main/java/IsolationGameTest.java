@@ -1,9 +1,11 @@
 package main.java;
 
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IsolationGameTest {
@@ -48,7 +50,7 @@ public class IsolationGameTest {
         isoGame = isoGame.play(new Move(6, 6, 6, 6));
         isoGame = isoGame.play(new Move(4, 4, 5, 5));
         ArrayList<Move> moves = isoGame.legalMoves(5, 5);
-        assertEquals(18, moves.size());
+        assertEquals(18, moves.size(), "Die Anzahl der legalen Züge soll 18 sein");
         assertTrue(containsMove(5, 7, moves));
         assertTrue(containsMove(5, 6, moves));
         assertTrue(containsMove(5, 4, moves));
@@ -85,25 +87,38 @@ public class IsolationGameTest {
         assertTrue(Arrays.stream(emptyGame.board).allMatch(fieldStates -> Arrays.stream(fieldStates).allMatch(Objects::isNull)));
         assertNull(emptyGame.redCrab);
         assertNull(emptyGame.greenCrab);
-        assertEquals(FieldState.RED, redCrabSetGame.board[4][4]);
-        assertTrue(Arrays.stream(redCrabSetGame.board).allMatch(fieldStates -> Arrays.stream(fieldStates).allMatch(fieldState -> fieldState != FieldState.BLOCKED)));
+        assertEquals(GameBoardState.RED, redCrabSetGame.board[4][4]);
+        assertTrue(Arrays.stream(redCrabSetGame.board).allMatch(fieldStates -> Arrays.stream(fieldStates).allMatch(fieldState -> fieldState != GameBoardState.BLOCKED)));
         assertNotNull(redCrabSetGame.redCrab);
         assertNull(redCrabSetGame.greenCrab);
-        assertTrue(Arrays.stream(redCrabMovedGame.board).anyMatch(fieldStates -> Arrays.stream(fieldStates).anyMatch(fieldState -> fieldState == FieldState.BLOCKED)));
+        assertTrue(Arrays.stream(redCrabMovedGame.board).anyMatch(fieldStates -> Arrays.stream(fieldStates).anyMatch(fieldState -> fieldState == GameBoardState.BLOCKED)));
         assertNotNull(redCrabMovedGame.redCrab);
         assertNull(redCrabMovedGame.greenCrab);
         assertNotNull(redCrabMovedGame.play(new Move(2, 2, 2, 2)).greenCrab);
     }
 
     @Test
-    public void testBestMove() {
+    public void testInvalidPlay() {
+        assertThrows(AssertionError.class, () -> {
+            new IsolationGame().play(new Move(4, 4, 0, 4));
+        });
+    }
+
+    @Test
+    public void testInvalidPlayWithValidPlayer() {
+        assertThrows(AssertionError.class, () -> {
+            IsolationGame game = new IsolationGame();
+            game = game.play(new Move(4, 4, 4, 4));
+            game = game.play(new Move(6, 6, 6, 6));
+            game.play(new Move(4, 4, 1, 4));
+        });
+    }
+
+    @Test
+    public void testIllegalMove() {
         IsolationGame isoGame = new IsolationGame();
-        isoGame = isoGame.play(new Move(0, 0, 0, 0));
-        isoGame = isoGame.play(new Move(0, 1, 0, 1));
-        isoGame.board[1][0] = FieldState.BLOCKED;
-        Move move = isoGame.bestMove();
-        assertEquals(1, move.destX());
-        assertEquals(1, move.destX());
+
+
     }
 
     boolean containsMove(int posX, int posY, ArrayList<Move> moves) {
