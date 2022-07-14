@@ -1,5 +1,8 @@
 package main.java;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,6 +12,7 @@ public class IsolationGame implements Isolation {
     Location redCrab = null;
     Location greenCrab = null;
     private static Random random = new Random();
+    private static Logger logicLog = LogManager.getLogger(IsolationGame.class);
 
     public IsolationGame() {
     }
@@ -50,27 +54,28 @@ public class IsolationGame implements Isolation {
     @Override
     public Move bestMove() {
         assert greenCrab != null : "Green crabby must be set";
-        ArrayList<Move> allLegalMoves = legalMoves(greenCrab.posX(), greenCrab.posY());
-        if (allLegalMoves.size() > 0) {
-            ArrayList<Move> bestMoves = new ArrayList<>();
-            int evaluateBestMove = Integer.MIN_VALUE;
-            for (Move move : allLegalMoves) {
-                int evaluate = play(move).alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
-                if (evaluateBestMove < evaluate) {
-                    evaluateBestMove = evaluate;
-                    bestMoves.clear();
-                    bestMoves.add(move);
-                } else if (evaluateBestMove == evaluate) {
-                    bestMoves.add(move);
+        ArrayList<Move> legalMoves = legalMoves(greenCrab.posX(), greenCrab.posY());
+        Move bestMove = null;
+        int calculatedBestMove;
+        if (legalMoves.size() > 0) {
+            calculatedBestMove = Integer.MIN_VALUE;
+            for (Move move : legalMoves) {
+                logicLog.info("Calculate guarantee of success for move from (%d/%d) to (%d/%d)".formatted(move.sourceX(), move.sourceY(), move.destX(), move.destY()));
+                int calculate = play(move).alphaBeta(2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                logicLog.info("The calculation returns (%d)".formatted(calculate));
+                if (calculatedBestMove < calculate) {
+                    calculatedBestMove = calculate;
+                    bestMove = move;
                 }
             }
-            int randomIndex = random.nextInt(bestMoves.size());
-            return bestMoves.get(randomIndex);
+            assert bestMove != null : "Every crabby must have at least one move";
+            logicLog.info("The randomized best move from (%d/%d) to (%d/%d).".formatted(bestMove.sourceX(), bestMove.sourceY(), bestMove.destX(), bestMove.destY()));
+            return bestMove;
         }
         return null;
     }
 
-    private int evaluate(boolean redCrabTurn) {
+    private int calculateRemainingMoves(boolean redCrabTurn) {
         assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
         if (redCrabTurn) {
             return -legalMoves(greenCrab.posX(), greenCrab.posY()).size();
@@ -81,15 +86,16 @@ public class IsolationGame implements Isolation {
 
     private int alphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
         assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
+        logicLog.info("If maximizing crab true, alphaBeta will try minimizing bot player´s advantage :" + maxCrab);
         if (depth == 0) {
             Move move = monteCarloAlgorithm(maxCrab);
             if (move == null) {
-                return evaluate(maxCrab);
+                return calculateRemainingMoves(maxCrab);
             }
-            return play(move).evaluate(maxCrab);
+            return play(move).calculateRemainingMoves(maxCrab);
         }
         if (isGameOver(redCrab.posX(), redCrab.posY()) || isGameOver(greenCrab.posX(), greenCrab.posY())) {
-            return evaluate(maxCrab);
+            return calculateRemainingMoves(maxCrab);
         }
 
         if (maxCrab) {

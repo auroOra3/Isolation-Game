@@ -1,5 +1,7 @@
 package main.java;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import processing.core.PApplet;
 
 
@@ -11,6 +13,7 @@ public class IsolationGameUI extends PApplet {
     private int currentInitFrame = 0;
     private int currentPirateFrame = 0;
     private FieldState whoHasLost;
+    private static Logger UILog = LogManager.getLogger(IsolationGameUI.class);
 
     public IsolationGameUI(boolean isDev) {
         if (isDev)
@@ -30,8 +33,8 @@ public class IsolationGameUI extends PApplet {
     @Override
     public void setup() {
         Images.imagePath(this);
+        Images.soundFile.loop();
         this.gameBoard = new GameBoard();
-        //Images.soundFile.loop();
     }
 
     @Override
@@ -81,7 +84,7 @@ public class IsolationGameUI extends PApplet {
                 "or by the other player\n" +
                 "If a player is unable to make any further move\n" +
                 "the opponent wins\n" +
-                "Thus the goal of the main.game is\n" +
+                "Thus the goal of the maingame is\n" +
                 "to be the last player with a remaining move available", width / 2, height - 420);
         textFont(Images.beteFont);
         fill(0, 95, 177);
@@ -141,14 +144,14 @@ public class IsolationGameUI extends PApplet {
 
     @Override
     public void mousePressed() {
-        System.out.println(mouseX);
-        System.out.println(mouseY);
 
         switch (currentState) {
             case STARTSCREEN -> {
                 if (mouseX > 152 && mouseX < 389 && mouseY > 578 && mouseY < 616) {
+                    UILog.info("User startes playing Isolation Game");
                     startGameScreen();
                 } else if (mouseX > 189 && mouseX < 354 && mouseY > 626 && mouseY < 642) {
+                    UILog.info("User clicked on Game Instruction");
                     startInstructionScreen();
                 }
             }
@@ -161,7 +164,9 @@ public class IsolationGameUI extends PApplet {
                 int posX = (mouseX - 90) / 45;
                 int posY = (mouseY - 171) / 45;
 
+                UILog.info("User clicked at (%d/%d)".formatted(posX, posY));
                 if (redTurn) {
+                    UILog.info("It´s red crabby´s turn.");
                     boolean isValidMove = gameBoard.executeMove(true, posX, posY);
                     if (isValidMove) {
                         redTurn = !redTurn;
@@ -169,6 +174,7 @@ public class IsolationGameUI extends PApplet {
                 }
 
                 if (!redTurn) {
+                    UILog.info("It´s green crabby´s turn.");
                     boolean isValidMove = gameBoard.executeBotMove();
                     if (isValidMove) {
                         redTurn = !redTurn;
@@ -177,6 +183,7 @@ public class IsolationGameUI extends PApplet {
 
                 whoHasLost = gameBoard.whoLost();
                 if (whoHasLost != null) {
+                    UILog.info("(%s) crabby lost the game.".formatted(whoHasLost));
                     if (whoHasLost == FieldState.GREEN || whoHasLost == FieldState.RED) {
                         startGameOverScreen();
                     }
