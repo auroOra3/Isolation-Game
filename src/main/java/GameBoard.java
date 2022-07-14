@@ -1,9 +1,6 @@
 package main.java;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import processing.core.PApplet;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,7 +13,6 @@ public class GameBoard {
     ArrayList<Move> legalMovesArray = new ArrayList<>();
     public Crab[][] gameBoard;
     private Crab redCrab, greenCrab;
-    private static Logger boardLog = LogManager.getLogger(GameBoard.class);
 
     public GameBoard() {
         int size = 8;
@@ -66,15 +62,15 @@ public class GameBoard {
 
     public boolean executeBotMove() {
         if (greenCrab == null) {
-            Move m;
+            Move move;
             do {
                 int randomX = random.nextInt(0, 7);
                 int randomY = random.nextInt(0, 7);
-                m = new Move(randomX, randomY, randomX, randomY);
-            } while (gameBoard[m.sourceX()][m.sourceY()] != null);
-            isolationInterface = isolationInterface.play(m);
-            greenCrab = new Crab(GameBoardState.GREEN, m.sourceX(), m.sourceY());
-            gameBoard[m.sourceX()][m.sourceY()] = greenCrab;
+                move = new Move(randomX, randomY, randomX, randomY);
+            } while (gameBoard[move.sourceX()][move.sourceY()] != null);
+            isolationInterface = isolationInterface.play(move);
+            greenCrab = new Crab(GameBoardState.GREEN, move.sourceX(), move.sourceY());
+            gameBoard[move.sourceX()][move.sourceY()] = greenCrab;
             legalMovesArray = isolationInterface.legalMoves(redCrab.getCrabPosX(), redCrab.getCrabPosY());
             return true;
         }

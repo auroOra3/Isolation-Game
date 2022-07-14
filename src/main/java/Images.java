@@ -31,7 +31,7 @@ public class Images {
     public static String betePath = "./resources/BeteNoirNF.ttf";
     public static String pirateFontPath = "./resources/PiratesBay.ttf";
     public static String treasureMapPath = "./resources/treasureMap.png";
-    public static String treasureMapNewPath = "./resources/treasureMapCool.png";
+    public static String treasureMapNewPath = "./resources/treasureMapTreasure.png";
     public static String blockedFieldPath = "./resources/blocked.png";
     public static String soundFilePath = "/resources/seashore_sound.wav";
     public static String speechBubblePath = "/resources/speech.png";

@@ -85,7 +85,7 @@ public class IsolationGame implements Isolation {
 
     private int negaMaxAlphaBeta(int depth, int alpha, int beta, boolean maxCrab) {
         assert redCrab != null && greenCrab != null : "Green crabby and red crabby must be set";
-        logicLog.info("If maxCrab true, alphaBeta will try maximizing red player´s advantage :" + maxCrab);
+        logicLog.info("If maxCrab true, alphaBeta will try maximizing red crabby´s advantage, else green crabby´s:" + maxCrab);
         if (depth == 0) {
             Move move = monteCarloAlgorithm(maxCrab);
             if (move == null) {
@@ -209,30 +209,26 @@ public class IsolationGame implements Isolation {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("-  -  -  -  -  -  -  -\n");
-
-        for (int x = 0; x < board.length; x++) {
-            for (GameBoardState[] gameBoardStates : board) {
-                GameBoardState state = gameBoardStates[x];
-                stringBuilder.append("|");
-                if (state == null) {
-                    stringBuilder.append(" ");
+        StringBuilder stringBuilder = new StringBuilder("Isolation Game\n");
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                GameBoardState gameBoardTile = board[y][x];
+                if (gameBoardTile == null) {
+                    stringBuilder.append(" - ");
                 } else {
-                    if (state == GameBoardState.GREEN) {
+                    if (gameBoardTile == GameBoardState.GREEN) {
                         stringBuilder.append("x");
                     }
-                    if (state == GameBoardState.RED) {
+                    if (gameBoardTile == GameBoardState.RED) {
                         stringBuilder.append("o");
                     }
-                    if (state == GameBoardState.BLOCKED) {
+                    if (gameBoardTile == GameBoardState.BLOCKED) {
                         stringBuilder.append("#");
                     }
                 }
-                stringBuilder.append("|");
             }
             stringBuilder.append("\n");
         }
-        stringBuilder.append(" -  -  -  -  -  -  -  -\n");
         return stringBuilder.toString();
     }
 }
