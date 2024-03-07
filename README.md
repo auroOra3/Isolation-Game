@@ -1,11 +1,15 @@
-# Isolation Game 
+# Isolation Game - Don´t get stranded!
 
-Isolation ist ein rundenbasiertes Strategie-Brettspiel, bei dem zwei Spieler versuchen abwechselnd ihren Gegner auf einem 8x8-Schachbrett einzusperren. Schlussendlich können sich die Spieler nicht mehr bewegen, wodurch sie isoliert sind. Die Spielfiguren können hierbei beliebig viele Felder aufwärts und abwärts, nach links und nach rechts sowie diagonal. Jedoch kann jeder Spieler die Spielfiguren nur unter bestimmten Bedingungen bewegen (siehe auch Abb. 1):
+![image](https://github.com/auroOra3/Isolation-Game/assets/75941646/b9112901-0cb4-4131-9dc1-7a75e7477e58)
+
+Isolation is a turn-based strategy board game in which two players take it in turns to trap their opponent on an 8x8 chessboard. In the end, the players can no longer move, which means they are isolated. The pieces can move up and down, left and right and diagonally as many squares as desired. However, each player can only move the pieces under certain conditions (see also Fig. 1):
 
 ![image](https://github.com/awesom-Oo/Isolation-Game/assets/75941646/67d2b628-b4cd-4e7a-9b38-1b03f6a7a966)
 
-- Spieler können ihre Figur nicht auf ein bereits besuchtes Feld setzen (sowohl Felder, die sie bereits selbst besucht haben, als auch diejenigen Felder, die der Gegner besucht hat), 
-- Spieler können bereits besuchte Felder nicht überqueren, 
-- Spieler können die Figur des gegnerischen Spielers nicht überspringen. 
+The rules of the game are as follows...
 
-Der erste Spieler ohne verbleibende legale Züge verliert und der Gegner wird zum Sieger erklärt.
+- Players cannot place their piece on a square that has already been visited (both squares that they have already visited themselves and squares that their opponent has visited), 
+- Players cannot cross squares they have already visited, 
+- Players cannot jump over the opponent's piece. 
+
+The first player with no remaining legal moves loses and the opponent is declared the winner.
